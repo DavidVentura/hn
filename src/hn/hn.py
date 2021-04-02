@@ -69,7 +69,7 @@ class NewsList(Gtk.Grid):
 
     def add_items(self, news_item):
         for child in self.vbox.get_children():
-            self.remove(child)
+            child.destroy()
 
         for i in news_item:
             widget = NewsItem(i)
