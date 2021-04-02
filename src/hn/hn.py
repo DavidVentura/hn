@@ -1,5 +1,4 @@
 #!/usr/bin/env python3.7
-from bs4 import BeautifulSoup, NavigableString
 import json
 import os
 import queue
@@ -13,44 +12,9 @@ from threading import Thread
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GLib, Gdk
 
+from pango import html_to_pango
 q = queue.Queue()
 session = requests.Session()
-
-def to_pango(node):
-    def escape(s):
-        return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-    if isinstance(node, NavigableString):
-        return escape(node)
-
-    escaped_text = escape(node.text)
-    if node.name == 'pre':
-        return f'<tt>{escaped_text}</tt>'
-
-    if node.name == 'a':
-        href = node["href"].replace('&', '&amp;')
-        return f'<a href="{href}">{escaped_text}</a>'
-
-    if node.name == 'p':
-        ret = '\n'
-        for child in node.children:
-            ret += to_pango(child)
-        ret += '\n'
-        return ret
-
-    if node.name in ['i', 'b']:
-        return str(node)
-
-    print('wtf!!', node)
-    return escaped_text
-
-def html_to_pango(html):
-    soup = BeautifulSoup(html, features="lxml")
-    ret = ''
-    for node in soup.body.children:
-        pango = to_pango(node)
-        if pango:
-            ret += pango
-    return ret.strip()
 
 def top_stories():
     if os.path.exists('topstories.json'):
@@ -235,8 +199,6 @@ class Comment(Gtk.Grid):
         self.attach(self.replies, 1, 3, 20, 10)
         self.show_all()
 
-        self.connect('notify::visible', self.on_visible)
-        self.connect('show', self.on_visible)
         q.put((self._set_content, _item_id))
 
     def _set_content(self, _item_id):

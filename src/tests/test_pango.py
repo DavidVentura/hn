@@ -1,4 +1,4 @@
-from hn.hn import html_to_pango
+from hn.pango import html_to_pango
 
 
 def test_pango_1():
