@@ -73,7 +73,6 @@ class NewsList(Gtk.Grid):
         scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scrolled_window.set_hexpand(True)
         scrolled_window.set_vexpand(True)
-        scrolled_window.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(.5,.5,.5,.5))
 
         self.add(scrolled_window)
         self.vbox = Gtk.VBox(spacing=6)
@@ -92,10 +91,10 @@ class NewsList(Gtk.Grid):
 class CommentThread(Gtk.Grid):
     def __init__(self, *args, **kwds):
         super().__init__(*args, **kwds)
+
         scrolled_window = Gtk.ScrolledWindow()
         scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scrolled_window.set_hexpand(True)
-        # scrolled_window.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(.5,.5,.5,.5))
 
         label = Gtk.Label(label='< Go back')
         label.set_hexpand(True)
@@ -132,25 +131,24 @@ class NewsItem(Gtk.Grid):
     def __init__(self, _item_id, *args, **kwds):
         super().__init__(*args, **kwds)
 
+        self.set_column_homogeneous(True)
         self.article_url = None
         self.thread_id = _item_id
 
         self.title = Gtk.Label()
         self.title.set_line_wrap(True)
         self.title.set_xalign(0)
-        self.title.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(.5,random.random(),.5,.5))
         self.title.set_hexpand(True)
 
         self.title_event = Gtk.EventBox()
         self.title_event.connect('button-release-event', self.title_click)
         self.title_event.add(self.title)
-        self.attach(self.title_event, 0, 0, 4, 2)
+        self.attach(self.title_event, 0, 0, 8, 2)
 
         self.url = Gtk.Label()
         self.url.set_xalign(0)
         self.url.set_hexpand(True)
-        self.url.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(random.random(),.5,.5,.5))
-        self.attach(self.url, 0, 3, 3, 1)
+        self.attach(self.url, 0, 3, 7, 1)
 
         self.comments = Gtk.Label()
         self.comments.set_hexpand(True)
@@ -159,10 +157,8 @@ class NewsItem(Gtk.Grid):
         self.comments_event = Gtk.EventBox()
         self.comments_event.add(self.comments)
         self.comments_event.connect('button-release-event', self.comments_click)
-        self.comments_event.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(random.random(),.5,.5,.5))
-        self.attach(self.comments_event, 5, 3, 1, 1)
+        self.attach(self.comments_event, 7, 3, 1, 1)
 
-        self.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(random.random(),.5,.5,.5))
         self.show_all()
         q.put((self._set_content, _item_id))
 
