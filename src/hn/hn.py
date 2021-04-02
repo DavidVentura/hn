@@ -175,7 +175,8 @@ class NewsItem(Gtk.Grid):
             url = data['url'].split('/')[2]
         else:
             url = 'self'
-        self.title.set_markup(f'<span size="12000">{title}</span>')
+        self.title.set_label(title)
+        self.title.get_style_context().add_class('news-item-title')
         self.url.set_label(url)
         self.comments.set_label(str(comment_count))
 
@@ -265,6 +266,7 @@ class Application(Gtk.Application):
         self.window.present()
         stories = top_stories()
         self.window.news_list.add_items(stories[:50])  # FIXME
+
 
 def background_fn():
     while True:

@@ -4,6 +4,9 @@
 	background-color: #f6f6ef;
 	min-height: 60px
 }
+.news-item-title {
+	font-size: 16px;
+}
 .comment-item {
 	padding: 10px;
 	/*
