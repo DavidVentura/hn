@@ -143,13 +143,15 @@ class NewsItem(Gtk.Grid):
         self.attach(self.url, 0, 3, 7, 1)
 
         self.comments = Gtk.Label()
+        self.comments.set_vexpand(True)
         self.comments.set_hexpand(True)
         self.comments.set_xalign(0)
+        self.comments.get_style_context().add_class('news-item-commentcount')
 
         self.comments_event = Gtk.EventBox()
         self.comments_event.add(self.comments)
         self.comments_event.connect('button-release-event', self.comments_click)
-        self.attach(self.comments_event, 7, 3, 1, 1)
+        self.attach(self.comments_event, 9, 0, 1, 4)
 
         self.show_all()
         q.put((self._set_content, _item_id))
@@ -204,6 +206,7 @@ class Comment(Gtk.VBox):
         self.replies_container = Gtk.Revealer()
         self.replies_container.set_reveal_child(True)
         self.replies = Gtk.VBox()
+        self.replies.set_vexpand(True)
         self.replies.get_style_context().add_class('comment-replies')
         self.replies_container.add(self.replies)
 

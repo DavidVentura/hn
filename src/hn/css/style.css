@@ -7,6 +7,10 @@
 .news-item-title {
 	font-size: 16px;
 }
+.news-item-commentcount {
+	padding: 5px;
+	background-color: #ff6600;
+}
 .comment-item {
 	padding: 10px;
 	/*
