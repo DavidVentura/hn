@@ -2,7 +2,8 @@
 
 - Code blocks
 - Fetch comments in threads
-- Doesn't work
+- Works in read-only fashion
+  - Can't reload news list
 
 # Screenshots
 
