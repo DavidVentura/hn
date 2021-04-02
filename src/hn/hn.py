@@ -11,9 +11,10 @@ import requests
 from threading import Thread
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, GObject, GLib, Gdk
+from gi.repository import Gtk, GLib, Gdk
 
 q = queue.Queue()
+session = requests.Session()
 
 def to_pango(node):
     def escape(s):
@@ -54,7 +55,7 @@ def html_to_pango(html):
 def top_stories():
     if os.path.exists('topstories.json'):
         return json.load(open('topstories.json'))
-    r = requests.get('https://hacker-news.firebaseio.com/v0/topstories.json')
+    r = session.get('https://hacker-news.firebaseio.com/v0/topstories.json')
     with open('topstories.json','w') as fd:
         fd.write(r.text)
     return r.json()
@@ -63,7 +64,7 @@ def top_stories():
 def get_id(_id):
     if os.path.exists(f'{_id}.json'):
         return json.load(open(f'{_id}.json'))
-    r = requests.get(f'https://hacker-news.firebaseio.com/v0/item/{_id}.json')
+    r = session.get(f'https://hacker-news.firebaseio.com/v0/item/{_id}.json')
     open(f'{_id}.json', 'w').write(r.text)
     data = r.json()
     return data
