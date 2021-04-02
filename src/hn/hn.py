@@ -148,10 +148,8 @@ class CommentThread(Gtk.Grid):
         for child in self.vbox.get_children():
             self.remove(child)
 
-        # print('adding', comments)
         for i in comments:
-            widget1 = Comment(i)  # Gtk.Button(label=str(i))
-            #widget1.set_margin_start(i)
+            widget1 = Comment(i)
             self.vbox.pack_start(widget1, 0, 0, 0)  ## fill and expand
 
 class NewsItem(Gtk.Grid):
@@ -193,12 +191,11 @@ class NewsItem(Gtk.Grid):
         q.put((self._set_content, _item_id))
 
     def comments_click(self, eventbox, event):
-        print("Should go now to thread", self.thread_id)
         window = self.get_toplevel()
         window.set_thread(self.thread_id)
 
     def title_click(self, eventbox, event):
-        print("Should go now to ", self.article_url)
+        print("TODO Should go now to ", self.article_url)
 
     def _set_content(self, _item_id):
         data = get_id(_item_id)
@@ -238,7 +235,6 @@ class Comment(Gtk.Grid):
         self.attach(self.replies, 1, 3, 20, 10)
         self.show_all()
 
-        # print(f'created comment with id {_item_id}')
         self.connect('notify::visible', self.on_visible)
         self.connect('show', self.on_visible)
         q.put((self._set_content, _item_id))
@@ -248,7 +244,6 @@ class Comment(Gtk.Grid):
         GLib.idle_add(self.set_content, comment, _item_id)
 
     def set_content(self, comment, _item_id):
-        # print('set_content', _item_id)
         if 'text' not in comment:  # deleted
             if 'kids' not in comment:
                 self.get_parent().remove(self)
@@ -258,21 +253,17 @@ class Comment(Gtk.Grid):
         else:
             text = comment['text']
             by = comment['by']
+        dead = comment.get('dead', False)
         self._time.set_markup(f"<span foreground='#999'>2m ago</span> - <b>{by}</b>")
 
-        # TODO: parse html into pango
         text = html_to_pango(text)
         self.comment.set_markup(text)
 
         for i in comment.get('kids', []):
-            # print(f'adding child {i} from {_item_id}')
             wid = Comment(i)
             wid.set_margin_start(10)
             wid.set_visible(True)
             self.replies.pack_start(wid, 0, 0, 0)
-
-    def on_visible(self, item, event):
-        print(self, item, event)
 
 
 class Application(Gtk.Application):
