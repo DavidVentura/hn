@@ -244,7 +244,6 @@ class Comment(Gtk.VBox):
 
         for i in kids:
             wid = Comment(i)
-            wid.set_margin_start(10)
             wid.set_visible(True)
             self.replies.pack_start(wid, 0, 0, 0)
 
