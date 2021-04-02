@@ -110,7 +110,7 @@ class CommentThread(Gtk.Grid):
 
     def _set_comments(self, comments):
         for child in self.vbox.get_children():
-            self.remove(child)
+            child.destroy()
 
         for i in comments:
             widget1 = Comment(i)
@@ -208,7 +208,7 @@ class Comment(Gtk.Grid):
     def set_content(self, comment, _item_id):
         if 'text' not in comment:  # deleted
             if 'kids' not in comment:
-                self.get_parent().remove(self)
+                self.destroy()
                 return
             text = 'deleted'
             by = 'deleted'
