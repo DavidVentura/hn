@@ -23,7 +23,7 @@ def to_pango(node):
 
     escaped_text = escape(node.text)
     if node.name == 'pre':
-        return f'<span font_family="monospace">{escaped_text}</span>'
+        return f'\n<tt>{escaped_text}</tt>'
 
     if node.name == 'a':
         href = node["href"].replace('&', '&amp;')
