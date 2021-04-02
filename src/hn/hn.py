@@ -200,10 +200,14 @@ class Comment(Gtk.VBox):
         self.comment_body.attach(self.comment, 1, 2, 20, 1)
 
         self.replies_visible = True
-        self.replies = Gtk.VBox(spacing=6)
+        self.replies_container = Gtk.Revealer()
+        self.replies_container.set_reveal_child(True)
+        self.replies = Gtk.VBox()
         self.replies.get_style_context().add_class('comment-replies')
+        self.replies_container.add(self.replies)
+
         self.add(self.comment_body)
-        self.add(self.replies)
+        self.add(self.replies_container)
         self.show_all()
 
         q.put((self._set_content, _item_id))
@@ -249,10 +253,8 @@ class Comment(Gtk.VBox):
 
     def reveal_replies_click(self, box, event):
         self.replies_visible = not self.replies_visible
-        self.replies.set_visible(self.replies_visible)
-        if self.replies_visible:
-            for kid in self.replies.get_children():
-                kid.show()
+        self.replies_container.set_reveal_child(self.replies_visible)
+
 
 class Application(Gtk.Application):
     def __init__(self, *args, **kwargs):
