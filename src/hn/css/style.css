@@ -1,0 +1,31 @@
+.news-item {
+	padding: 5px;
+	margin-bottom: 2px;
+	background-color: #f6f6ef;
+	min-height: 60px
+}
+.comment-item {
+	padding: 10px;
+	/*
+	border-left: 4px solid #f00;
+	margin-left: -2px;
+	*/
+	margin-bottom: 5px;
+	background-color: #f6f6ef;
+	box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.18);
+}
+.comment-replies {
+	border-left: 1px solid #ccc;
+}
+
+.comment-item-dead {
+	color: #999;
+}
+
+.thread-comments {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.thread-back {
+	background-color: #ff6600;
+}
