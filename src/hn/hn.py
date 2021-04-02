@@ -97,12 +97,24 @@ class CommentThread(Gtk.Grid):
         scrolled_window.set_hexpand(True)
         # scrolled_window.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(.5,.5,.5,.5))
 
-        self.add(scrolled_window)
+        label = Gtk.Label(label='< Go back')
+        label.set_hexpand(True)
+        label.set_xalign(0)
+        back_event = Gtk.EventBox()
+        back_event.add(label)
+        back_event.connect('button-release-event', self.back_click)
+
+        self.attach(back_event, 0, 0, 1, 1)
+        self.attach(scrolled_window, 0, 1, 1, 10)
 
         self.vbox = Gtk.VBox(spacing=6)
         self.vbox.set_homogeneous = False
         scrolled_window.add(self.vbox)
         self.show_all()
+
+    def back_click(self, box, event):
+        window = self.get_toplevel()
+        window.set_news()
 
     def set_comments(self, thread_id):
         data = get_id(thread_id)
