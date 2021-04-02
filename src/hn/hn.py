@@ -246,14 +246,14 @@ class Application(Gtk.Application):
         stories = top_stories()
         self.window.news_list.add_items(stories[:50])  # FIXME
 
-def create_comments():
+def background_fn():
     while True:
         fn, arg = q.get()
         fn(arg)
 
 
 def main():
-    t = Thread(target=create_comments)
+    t = Thread(target=background_fn)
     t.daemon = True
     t.start()
     app = Application()
