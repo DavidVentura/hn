@@ -64,7 +64,6 @@ class NewsList(Gtk.Grid):
 
         self.add(scrolled_window)
         self.vbox = Gtk.VBox()
-        self.vbox.set_homogeneous = False
         scrolled_window.add(self.vbox)
         self.show_all()
 
@@ -98,7 +97,6 @@ class CommentThread(Gtk.Grid):
         self.attach(scrolled_window, 0, 1, 1, 10)
 
         self.vbox = Gtk.VBox()
-        self.vbox.set_homogeneous = False
         scrolled_window.add(self.vbox)
         self.show_all()
 
@@ -204,7 +202,6 @@ class Comment(Gtk.VBox):
 
         self.replies_visible = True
         self.replies_container = Gtk.Revealer()
-        self.replies_container.set_reveal_child(True)
         self.replies = Gtk.VBox()
         self.replies.set_vexpand(True)
         self.replies.get_style_context().add_class('comment-replies')
@@ -254,6 +251,7 @@ class Comment(Gtk.VBox):
             wid = Comment(i)
             wid.set_visible(True)
             self.replies.pack_start(wid, 0, 0, 0)
+        self.replies_container.set_reveal_child(True)
 
     def reveal_replies_click(self, box, event):
         self.replies_visible = not self.replies_visible
