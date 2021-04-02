@@ -184,24 +184,25 @@ class Comment(Gtk.VBox):
     def __init__(self, _item_id, *args, **kwds):
         super().__init__(*args, **kwds)
 
-        comment_body = Gtk.Grid()
+        self.comment_body = Gtk.Grid()
 
-        comment_body.get_style_context().add_class('comment-item')
+        self.comment_body.get_style_context().add_class('comment-item')
         self._time = Gtk.Label()
         self._time.set_margin_bottom(10)
         self._time.set_xalign(0)
-        comment_body.attach(self._time, 1, 1, 1, 1)
+        self.comment_body.attach(self._time, 1, 1, 1, 1)
 
         self.comment = Gtk.Label(label='...')
         self.comment.set_vexpand(True)
         self.comment.set_line_wrap(True)
         self.comment.set_selectable(True)
         self.comment.set_xalign(0)
-        comment_body.attach(self.comment, 1, 2, 20, 1)
+        self.comment_body.attach(self.comment, 1, 2, 20, 1)
 
+        self.replies_visible = True
         self.replies = Gtk.VBox(spacing=6)
         self.replies.get_style_context().add_class('comment-replies')
-        self.add(comment_body)
+        self.add(self.comment_body)
         self.add(self.replies)
         self.show_all()
 
@@ -222,6 +223,7 @@ class Comment(Gtk.VBox):
             text = comment['text']
             by = comment['by']
         dead = comment.get('dead', False)
+
         if dead:
             self.get_style_context().add_class('comment-item-dead')
 
@@ -230,12 +232,28 @@ class Comment(Gtk.VBox):
         text = html_to_pango(text)
         self.comment.set_markup(text)
 
-        for i in comment.get('kids', []):
+        kids = comment.get('kids', [])
+        if kids:
+            self.revealer_event = Gtk.EventBox()
+            revealer_label = Gtk.Label(label='Toggle replies')
+            revealer_label.get_style_context().add_class('comment-item-toggle')
+            self.revealer_event.connect('button-release-event', self.reveal_replies_click)
+            self.revealer_event.add(revealer_label)
+            self.comment_body.attach(self.revealer_event, 1, 3, 20, 1)
+            self.show_all()
+
+        for i in kids:
             wid = Comment(i)
             wid.set_margin_start(10)
             wid.set_visible(True)
             self.replies.pack_start(wid, 0, 0, 0)
 
+    def reveal_replies_click(self, box, event):
+        self.replies_visible = not self.replies_visible
+        self.replies.set_visible(self.replies_visible)
+        if self.replies_visible:
+            for kid in self.replies.get_children():
+                kid.show()
 
 class Application(Gtk.Application):
     def __init__(self, *args, **kwargs):

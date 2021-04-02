@@ -14,6 +14,10 @@
 	background-color: #f6f6ef;
 	box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.18);
 }
+.comment-item-toggle {
+	font-size: 10px;
+	color: #ccc;
+}
 .comment-replies {
 	border-left: 1px solid #ccc;
 }
