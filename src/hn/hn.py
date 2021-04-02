@@ -59,15 +59,23 @@ class NewsList(Gtk.Grid):
         super().__init__(*args, **kwargs)
         scrolled_window = Gtk.ScrolledWindow()
         scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        scrolled_window.set_hexpand(True)
-        scrolled_window.set_vexpand(True)
+        scrolled_window.connect('edge-overshot', self.edge_overshot)
 
         self.add(scrolled_window)
         self.vbox = Gtk.VBox()
         scrolled_window.add(self.vbox)
         self.show_all()
 
-    def add_items(self, news_item):
+    def edge_overshot(self, pos, user_data):
+        if user_data != Gtk.PositionType.TOP:
+            return
+        q.put((self.refresh, None))
+
+    def refresh(self, _):
+        stories = top_stories()
+        GLib.idle_add(self.set_items, stories[:50])  # FIXME
+
+    def set_items(self, news_item):
         for child in self.vbox.get_children():
             child.destroy()
 
@@ -265,8 +273,7 @@ class Application(Gtk.Application):
     def do_activate(self):
         self.window = AppWindow(application=self, title="Main Window")
         self.window.present()
-        stories = top_stories()
-        self.window.news_list.add_items(stories[:50])  # FIXME
+        q.put((self.window.news_list.refresh, None))
 
 
 def background_fn():
