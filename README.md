@@ -3,7 +3,7 @@
 - Code blocks
 - Fetch comments in threads
 - Works in read-only fashion
-  - Can't reload news list
+  - News list can only reload by over-shooting the scroll, but there's no visual indicator
 
 # Screenshots
 
