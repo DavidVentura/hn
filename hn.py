@@ -248,6 +248,7 @@ class Comment(Gtk.Grid):
         # print('set_content', _item_id)
         if 'text' not in comment:  # deleted
             if 'kids' not in comment:
+                self.get_parent().remove(self)
                 return
             text = 'deleted'
             by = 'deleted'
