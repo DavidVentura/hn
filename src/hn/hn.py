@@ -1,11 +1,7 @@
 #!/usr/bin/env python3.7
-import json
-import os
 import queue
-import random
 
 import gi
-import requests
 
 from threading import Thread
 
@@ -13,26 +9,8 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GLib, Gdk
 
 from pango import html_to_pango
+from api import top_stories, get_id
 q = queue.Queue()
-session = requests.Session()
-
-def top_stories():
-    if os.path.exists('topstories.json'):
-        return json.load(open('topstories.json'))
-    r = session.get('https://hacker-news.firebaseio.com/v0/topstories.json')
-    with open('topstories.json','w') as fd:
-        fd.write(r.text)
-    return r.json()
-
-
-def get_id(_id):
-    if os.path.exists(f'{_id}.json'):
-        return json.load(open(f'{_id}.json'))
-    r = session.get(f'https://hacker-news.firebaseio.com/v0/item/{_id}.json')
-    open(f'{_id}.json', 'w').write(r.text)
-    data = r.json()
-    return data
-
 
 class AppWindow(Gtk.ApplicationWindow):
     def __init__(self, *args, **kwargs):
