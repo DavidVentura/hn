@@ -23,16 +23,17 @@ def to_pango(node):
 
     escaped_text = escape(node.text)
     if node.name == 'pre':
-        return f'\n<tt>{escaped_text}</tt>'
+        return f'<tt>{escaped_text}</tt>'
 
     if node.name == 'a':
         href = node["href"].replace('&', '&amp;')
         return f'<a href="{href}">{escaped_text}</a>'
 
     if node.name == 'p':
-        ret = ''
+        ret = '\n'
         for child in node.children:
             ret += to_pango(child)
+        ret += '\n'
         return ret
 
     if node.name in ['i', 'b']:
@@ -48,14 +49,8 @@ def html_to_pango(html):
         pango = to_pango(node)
         if pango:
             ret += pango
-    return ret
+    return ret.strip()
 
-text = 'HN traffic isn&#x27;t all that & demanding[1]. <p>[1]: &lt;<a href=\"somehref\" rel=\"nofollow\">some anchor text ...</a>&gt;'
-expected = 'HN traffic isn\'t all that &amp; demanding[1]. [1]: &lt;<a href="somehref">some anchor text ...</a>&gt;'
-parsed = html_to_pango(text)
-# TODO test with & in href
-for i in range(0, len(parsed)):
-    assert parsed[i] == expected[i], f'{i}: {parsed[i]} vs {expected[i]}'
 def top_stories():
     if os.path.exists('topstories.json'):
         return json.load(open('topstories.json'))
@@ -168,23 +163,29 @@ class NewsItem(Gtk.Grid):
         self.title = Gtk.Label()
         self.title.set_line_wrap(True)
         self.title.set_xalign(0)
+        self.title.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(.5,random.random(),.5,.5))
+        self.title.set_hexpand(True)
 
         self.title_event = Gtk.EventBox()
         self.title_event.connect('button-release-event', self.title_click)
         self.title_event.add(self.title)
-        self.attach(self.title_event, 1, 1, 20, 2)
+        self.attach(self.title_event, 0, 0, 4, 2)
 
         self.url = Gtk.Label()
         self.url.set_xalign(0)
-        self.attach(self.url, 1, 3, 1, 1)
+        self.url.set_hexpand(True)
+        self.url.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(random.random(),.5,.5,.5))
+        self.attach(self.url, 0, 3, 3, 1)
 
         self.comments = Gtk.Label()
+        self.comments.set_hexpand(True)
         self.comments.set_xalign(0)
 
         self.comments_event = Gtk.EventBox()
         self.comments_event.add(self.comments)
         self.comments_event.connect('button-release-event', self.comments_click)
-        self.attach(self.comments_event, 18, 3, 1, 1)
+        self.comments_event.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(random.random(),.5,.5,.5))
+        self.attach(self.comments_event, 5, 3, 1, 1)
 
         self.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(random.random(),.5,.5,.5))
         self.show_all()
@@ -192,7 +193,8 @@ class NewsItem(Gtk.Grid):
 
     def comments_click(self, eventbox, event):
         print("Should go now to thread", self.thread_id)
-        app.window.set_thread(self.thread_id)
+        window = self.get_toplevel()
+        window.set_thread(self.thread_id)
 
     def title_click(self, eventbox, event):
         print("Should go now to ", self.article_url)
@@ -279,6 +281,7 @@ class Application(Gtk.Application):
     def do_activate(self):
         self.window = AppWindow(application=self, title="Main Window")
         self.window.present()
+        stories = top_stories()
         self.window.news_list.add_items(stories[:50])  # FIXME
 
 def create_comments():
@@ -286,9 +289,13 @@ def create_comments():
         fn, arg = q.get()
         fn(arg)
 
-stories = top_stories()
-t = Thread(target=create_comments)
-t.daemon = True
-t.start()
-app = Application()
-app.run()
+
+def main():
+    t = Thread(target=create_comments)
+    t.daemon = True
+    t.start()
+    app = Application()
+    app.run()
+
+if __name__ == '__main__':
+    main()
