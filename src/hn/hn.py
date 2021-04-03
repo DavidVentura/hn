@@ -49,9 +49,9 @@ class AppWindow(Gtk.ApplicationWindow):
         context.add_provider_for_screen(screen, css_provider,
                                         Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-    def set_thread(self, thread_id, thread_title):
+    def set_thread(self, story):
         self.stack.set_visible_child(self.ct)
-        self.ct.load_thread(thread_id, thread_title)
+        self.ct.load_thread(story)
     
     def set_news(self):
         self.stack.set_visible_child(self.news_list)
@@ -132,9 +132,18 @@ class ThreadHeader(Gtk.Grid):
         self.get_style_context().add_class('thread-header')
 
         self.title = Gtk.Label(label='...')
+        self.title.set_hexpand(True)
         self.title.set_line_wrap(True)
         self.title.set_xalign(0)
         self.title.get_style_context().add_class('thread-title')
+
+        article_icon = Gtk.Image.new_from_icon_name(icon_name='applications-internet', size=Gtk.IconSize.SMALL_TOOLBAR)
+        article_icon.set_halign(Gtk.Align.END)
+        article_icon.get_style_context().add_class('thread-article')
+
+        article_event = Gtk.EventBox()
+        article_event.add(article_icon)
+        article_event.connect('button-release-event', self.article_click)
 
         back_icon = Gtk.Image.new_from_icon_name(icon_name='go-previous', size=Gtk.IconSize.BUTTON)
         back_icon.set_halign(Gtk.Align.START)
@@ -145,16 +154,22 @@ class ThreadHeader(Gtk.Grid):
         back_event.connect('button-release-event', self.back_click)
 
         self.attach(back_event, 0, 0, 1, 1)
+        self.attach(article_event, 5, 0, 1, 1)
         self.attach(self.title, 0, 1, 6, 1)
 
         self.show_all()
+
+    def article_click(self, box, event):
+        window = self.get_toplevel()
+        window.set_website(self.article_url)
 
     def back_click(self, box, event):
         window = self.get_toplevel()
         window.set_news()
 
-    def set_title(self, title):
-        self.title.set_label(title)
+    def set_story_details(self, story):
+        self.article_url = story.url
+        self.title.set_label(story.title)
 
 class CommentThread(Gtk.Grid):
     def __init__(self, *args, **kwds):
@@ -178,9 +193,9 @@ class CommentThread(Gtk.Grid):
         scrolled_window.add(header_comments_vbox)
         self.show_all()
 
-    def load_thread(self, thread_id, thread_title):
-        self.header.set_title(thread_title)
-        q.put((self._load_thread, thread_id))
+    def load_thread(self, story):
+        self.header.set_story_details(story)
+        q.put((self._load_thread, story.story_id))
 
     def _load_thread(self, thread_id):
         for child in self.comments_container.get_children():
@@ -189,9 +204,9 @@ class CommentThread(Gtk.Grid):
         self._set_comments(story.kids)
 
     def _set_comments(self, comments):
-
         for i in comments:
             widget1 = CommentItem(i, 0)
+            widget1.set_visible(True)
             self.comments_container.pack_start(widget1, 0, 0, 0)  ## fill and expand
 
 class NewsItem(Gtk.Grid):
@@ -234,7 +249,7 @@ class NewsItem(Gtk.Grid):
 
     def comments_click(self, eventbox, event):
         window = self.get_toplevel()
-        window.set_thread(self.thread_id, self.thread_title)
+        window.set_thread(self.story)
 
     def title_click(self, eventbox, event):
         window = self.get_toplevel()
@@ -245,6 +260,7 @@ class NewsItem(Gtk.Grid):
         GLib.idle_add(self.set_content, story)
 
     def set_content(self, story: Story):
+        self.story = story
         self.article_url = story.url
         self.thread_title = story.title
         self.title.set_label(story.title)

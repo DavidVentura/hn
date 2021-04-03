@@ -20,6 +20,7 @@ class Comment:
 
 @dataclass(frozen=True)
 class Story:
+    story_id: int
     title: str
     url: str
     url_domain: str
@@ -57,7 +58,7 @@ def get_story(_id) -> Story:
         url = 'self'
         url_domain = 'self'
 
-    return Story(title=title, url=url, url_domain=url_domain,
+    return Story(story_id=_id, title=title, url=url, url_domain=url_domain,
                  kids=kids, comment_count=comment_count, score=score)
 
 def get_comment(_id) -> Comment:
