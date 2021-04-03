@@ -2,6 +2,7 @@
 
 - Code blocks
 - Fetch comments in threads
+- Copied colors / layout / thread depth from [Materialistic](https://github.com/hidroh/materialistic)
 - Works in read-only fashion
   - News list can only reload by over-shooting the scroll, but there's no visual indicator
 

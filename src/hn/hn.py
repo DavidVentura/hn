@@ -191,7 +191,7 @@ class CommentThread(Gtk.Grid):
     def _set_comments(self, comments):
 
         for i in comments:
-            widget1 = CommentItem(i)
+            widget1 = CommentItem(i, 0)
             self.comments_container.pack_start(widget1, 0, 0, 0)  ## fill and expand
 
 class NewsItem(Gtk.Grid):
@@ -254,8 +254,11 @@ class NewsItem(Gtk.Grid):
 
 
 class CommentItem(Gtk.VBox):
-    def __init__(self, _item_id, *args, **kwds):
+    def __init__(self, _item_id, nesting, *args, **kwds):
         super().__init__(*args, **kwds)
+
+        self.nesting = nesting
+        self.get_style_context().add_class(f'comment-item-nested-{nesting}')
 
         self.set_vexpand(False)
         self.comment_body = Gtk.Grid()
@@ -280,6 +283,7 @@ class CommentItem(Gtk.VBox):
         self.replies.set_vexpand(True)
         self.replies.get_style_context().add_class('comment-replies')
         self.replies_container.add(self.replies)
+        self.replies_container.set_reveal_child(False)
 
         self.add(self.comment_body)
         self.add(self.replies_container)
@@ -303,6 +307,7 @@ class CommentItem(Gtk.VBox):
         self.comment.set_markup(comment.markup)
 
         if comment.kids:
+            self.replies_container.set_reveal_child(True)
             self.revealer_event = Gtk.EventBox()
             self.revealer_label = Gtk.Image.new_from_icon_name(icon_name='go-up', size=Gtk.IconSize.SMALL_TOOLBAR)
             self.revealer_label.get_style_context().add_class('comment-item-toggle')
@@ -312,10 +317,9 @@ class CommentItem(Gtk.VBox):
             self.show_all()
 
         for i in comment.kids:
-            wid = CommentItem(i)
+            wid = CommentItem(i, self.nesting + 1)
             wid.set_visible(True)
             self.replies.pack_start(wid, 0, 0, 0)
-        self.replies_container.set_reveal_child(True)
 
     def reveal_replies_click(self, box, event):
         self.replies_visible = not self.replies_visible
