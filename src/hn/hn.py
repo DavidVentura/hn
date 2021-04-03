@@ -269,9 +269,9 @@ class CommentItem(Gtk.VBox):
 
     def _set_content(self, _item_id):
         comment = get_id(_item_id)
-        GLib.idle_add(self.set_content, comment, _item_id)
+        GLib.idle_add(self.set_content, comment)
 
-    def set_content(self, comment, _item_id):
+    def set_content(self, comment):
         if 'text' not in comment:  # deleted
             if 'kids' not in comment:
                 self.destroy()
