@@ -128,6 +128,7 @@ class NewsList(Gtk.Grid):
 class ThreadHeader(Gtk.Grid):
     def __init__(self, *args, **kwds):
         super().__init__(*args, **kwds)
+        self.set_vexpand(False)
         self.get_style_context().add_class('thread-header')
 
         self.title = Gtk.Label(label='...')
@@ -160,7 +161,6 @@ class CommentThread(Gtk.Grid):
         super().__init__(*args, **kwds)
 
         scrolled_window = Gtk.ScrolledWindow()
-        scrolled_window.get_style_context().add_class('thread-comments')
         scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 
         self.add(scrolled_window)
@@ -168,10 +168,12 @@ class CommentThread(Gtk.Grid):
         self.header = ThreadHeader()
         self.header.set_hexpand(True)
         self.comments_container = Gtk.VBox()
-        self.comments_container.set_homogeneous(False)
+        self.comments_container.set_vexpand(True)
+        self.comments_container.get_style_context().add_class('thread-comments')
         header_comments_vbox = Gtk.VBox()
-        header_comments_vbox.add(self.header)
-        header_comments_vbox.add(self.comments_container)
+        header_comments_vbox.pack_start(self.header, 0, 0, 0)
+        header_comments_vbox.pack_start(self.comments_container, 1, 1, 0)
+        # Allow comments_container to grow and take all space
 
         scrolled_window.add(header_comments_vbox)
         self.show_all()
@@ -255,6 +257,7 @@ class CommentItem(Gtk.VBox):
     def __init__(self, _item_id, *args, **kwds):
         super().__init__(*args, **kwds)
 
+        self.set_vexpand(False)
         self.comment_body = Gtk.Grid()
 
         self.comment_body.get_style_context().add_class('comment-item')
