@@ -12,8 +12,9 @@
 
 # Ideas
 
-Content blocker on the WebView, but seems
+* Content blocker on the WebView, but seems
 [complicated](https://lists.webkit.org/pipermail/webkit-gtk/2013-March/001395.html) to implement.
+* I'd like to move the UI layout to XML files, but also looks complicated
 
 # Useful links
 
