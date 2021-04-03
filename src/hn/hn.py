@@ -11,8 +11,7 @@ gi.require_version("Gtk", "3.0")
 gi.require_version("WebKit2", "4.0")
 from gi.repository import Gtk, GLib, Gdk, WebKit2
 
-from pango import html_to_pango
-from api import top_stories, get_id
+from api import top_stories, get_comment, get_id, Comment
 q = queue.Queue()
 
 STYLE_FILE = Path(__file__).parent / 'css' / 'style.css'
@@ -165,7 +164,7 @@ class CommentThread(Gtk.Grid):
             child.destroy()
 
         for i in comments:
-            widget1 = Comment(i)
+            widget1 = CommentItem(i)
             self.vbox.pack_start(widget1, 0, 0, 0)  ## fill and expand
 
 class NewsItem(Gtk.Grid):
@@ -268,31 +267,21 @@ class CommentItem(Gtk.VBox):
         q.put((self._set_content, _item_id))
 
     def _set_content(self, _item_id):
-        comment = get_id(_item_id)
+        comment = get_comment(_item_id)
         GLib.idle_add(self.set_content, comment)
 
-    def set_content(self, comment):
-        if 'text' not in comment:  # deleted
-            if 'kids' not in comment:
-                self.destroy()
-                return
-            text = 'deleted'
-            by = 'deleted'
-        else:
-            text = comment['text']
-            by = comment['by']
-        dead = comment.get('dead', False)
+    def set_content(self, comment: Comment):
+        if comment.deleted and not comment.kids:
+            self.destroy()
+            return
 
-        if dead:
+        if comment.dead:
             self.get_style_context().add_class('comment-item-dead')
 
-        self._time.set_markup(f"<small><span foreground='#999'>2m ago</span> - <b>{by}</b></small>")
+        self._time.set_markup(f"<small><span foreground='#999'>2m ago</span> - <b>{comment.user}</b></small>")
+        self.comment.set_markup(comment.markup)
 
-        text = html_to_pango(text)
-        self.comment.set_markup(text)
-
-        kids = comment.get('kids', [])
-        if kids:
+        if comment.kids:
             self.revealer_event = Gtk.EventBox()
             revealer_label = Gtk.Label(label='Toggle replies')
             revealer_label.get_style_context().add_class('comment-item-toggle')
@@ -301,7 +290,7 @@ class CommentItem(Gtk.VBox):
             self.comment_body.attach(self.revealer_event, 1, 3, 20, 1)
             self.show_all()
 
-        for i in kids:
+        for i in comment.kids:
             wid = CommentItem(i)
             wid.set_visible(True)
             self.replies.pack_start(wid, 0, 0, 0)

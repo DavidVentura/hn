@@ -3,7 +3,24 @@ import os
 
 import requests
 
+from typing import List
+from dataclasses import dataclass
+
+from pango import html_to_pango
+
 session = requests.Session()
+
+@dataclass(frozen=True)
+class Comment:
+    user: str
+    markup: str
+    kids: List[int]
+    dead: bool
+    deleted: bool
+
+@dataclass(frozen=True)
+class Story:
+    pass
 
 def top_stories():
     if os.path.exists('topstories.json'):
@@ -22,5 +39,25 @@ def get_id(_id):
     data = r.json()
     return data
 
+def get_story(_id) -> Story:
+    raw = get_id(_id)
 
+def get_comment(_id) -> Comment:
+    raw_data = get_id(_id)
+    deleted = False
+    dead = False
+    markup = ''
+    user = ''
+    if 'text' not in raw_data:  # deleted
+        deleted = True
+        markup = 'deleted'
+        user = 'deleted'
+    else:
+        markup = html_to_pango(raw_data['text'])
+        user = raw_data['by']
 
+    dead = raw_data.get('dead', False)
+    kids = raw_data.get('kids', [])
+
+    return Comment(user=user, markup=markup, kids=kids,
+                   dead=dead, deleted=deleted)
