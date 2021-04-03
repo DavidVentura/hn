@@ -9,7 +9,7 @@
 }
 .news-item-commentcount {
 	padding: 5px;
-	background-color: #ff6600;
+	background-color: #ffb64d;
 }
 .comment-item {
 	padding: 10px;
@@ -39,9 +39,15 @@
 	padding-right: 10px;
 }
 .thread-header {
-	background-color: #ff6600;
+	background-color: #ffb64d;
 	padding: 8px;
 }
+.thread-back {
+	padding: 5px;
+	margin-left: 0px;
+}
 .thread-title {
+	padding-top: 5px;
+	padding-bottom: 5px;
 	font-size: 16px;
 }

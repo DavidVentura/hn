@@ -135,11 +135,12 @@ class ThreadHeader(Gtk.Grid):
         self.title.set_xalign(0)
         self.title.get_style_context().add_class('thread-title')
 
-        label = Gtk.Image.new_from_icon_name(icon_name='go-previous', size=Gtk.IconSize.BUTTON)
-        label.get_style_context().add_class('thread-back')
+        back_icon = Gtk.Image.new_from_icon_name(icon_name='go-previous', size=Gtk.IconSize.BUTTON)
+        back_icon.set_halign(Gtk.Align.START)
+        back_icon.get_style_context().add_class('thread-back')
 
         back_event = Gtk.EventBox()
-        back_event.add(label)
+        back_event.add(back_icon)
         back_event.connect('button-release-event', self.back_click)
 
         self.attach(back_event, 0, 0, 1, 1)
