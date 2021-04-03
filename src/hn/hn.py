@@ -144,16 +144,20 @@ class CommentThread(Gtk.Grid):
         back_event.add(label)
         back_event.connect('button-release-event', self.back_click)
 
-        self.attach(back_event, 0, 0, 1, 1)
-        self.attach(scrolled_window, 0, 1, 1, 10)
+        self.add(scrolled_window)
 
         self.vbox = Gtk.VBox()
-        scrolled_window.add(self.vbox)
+        header_comments_vbox = Gtk.VBox()
+        scrolled_window.add(header_comments_vbox)
+        header_comments_vbox.add(back_event)
+        header_comments_vbox.add(self.vbox)
         self.show_all()
 
     def back_click(self, box, event):
         window = self.get_toplevel()
         window.set_news()
+        for child in self.vbox.get_children():
+            child.destroy()
 
     def load_thread(self, thread_id):
         q.put((self._load_thread, thread_id))
@@ -315,7 +319,7 @@ def background_fn():
     while True:
         fn, arg = q.get()
         fn(arg)
-        time.sleep(0.01)
+        time.sleep(0.1)
 
 
 def main():
