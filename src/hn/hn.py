@@ -120,7 +120,7 @@ class NewsList(Gtk.Grid):
 
     def set_items(self, news_item):
         for child in self.vbox.get_children():
-            child.destroy()
+            GLib.idle_add(child.destroy)
 
         for i in news_item:
             widget = NewsItem(i)
@@ -157,7 +157,7 @@ class CommentThread(Gtk.Grid):
         window = self.get_toplevel()
         window.set_news()
         for child in self.vbox.get_children():
-            child.destroy()
+            GLib.idle_add(child.destroy)
 
     def load_thread(self, thread_id):
         q.put((self._load_thread, thread_id))
@@ -168,7 +168,7 @@ class CommentThread(Gtk.Grid):
 
     def _set_comments(self, comments):
         for child in self.vbox.get_children():
-            child.destroy()
+            GLib.idle_add(child.destroy)
 
         for i in comments:
             widget1 = CommentItem(i)
@@ -271,7 +271,7 @@ class CommentItem(Gtk.VBox):
 
     def set_content(self, comment: Comment):
         if comment.deleted and not comment.kids:
-            self.destroy()
+            GLib.idle_add(self.destroy)
             return
 
         if comment.dead:
