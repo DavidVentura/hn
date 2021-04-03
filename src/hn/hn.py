@@ -52,7 +52,7 @@ class AppWindow(Gtk.ApplicationWindow):
 
     def set_thread(self, thread_id):
         self.stack.set_visible_child(self.ct)
-        self.ct.set_comments(thread_id)
+        self.ct.load_thread(thread_id)
     
     def set_news(self):
         self.stack.set_visible_child(self.news_list)
@@ -155,7 +155,10 @@ class CommentThread(Gtk.Grid):
         window = self.get_toplevel()
         window.set_news()
 
-    def set_comments(self, thread_id):
+    def load_thread(self, thread_id):
+        q.put((self._load_thread, thread_id))
+
+    def _load_thread(self, thread_id):
         story = get_story(thread_id)
         self._set_comments(story.kids)
 
