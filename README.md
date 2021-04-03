@@ -23,3 +23,4 @@
 * [Gtk supported CSS props](https://developer.gnome.org/gtk3/stable/chap-css-properties.html)
 * [Pango markup](https://developer.gnome.org/pygtk/stable/pango-markup-language.html)
 * [BS4](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
+* [Gnome icon naming spec](https://developer.gnome.org/icon-naming-spec/)

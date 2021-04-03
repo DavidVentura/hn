@@ -38,6 +38,10 @@
 	padding-left: 10px;
 	padding-right: 10px;
 }
-.thread-back {
+.thread-header {
 	background-color: #ff6600;
+	padding: 8px;
+}
+.thread-title {
+	font-size: 16px;
 }

@@ -20,7 +20,6 @@ class AppWindow(Gtk.ApplicationWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.old_child = None
-        self.connect("destroy", Gtk.main_quit)
         self.setup_styles()
         self.set_default_size(360, 640)
 
@@ -50,9 +49,9 @@ class AppWindow(Gtk.ApplicationWindow):
         context.add_provider_for_screen(screen, css_provider,
                                         Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-    def set_thread(self, thread_id):
+    def set_thread(self, thread_id, thread_title):
         self.stack.set_visible_child(self.ct)
-        self.ct.load_thread(thread_id)
+        self.ct.load_thread(thread_id, thread_title)
     
     def set_news(self):
         self.stack.set_visible_child(self.news_list)
@@ -126,6 +125,35 @@ class NewsList(Gtk.Grid):
             widget = NewsItem(i)
             self.vbox.pack_start(widget, 0, 0, 0)
 
+class ThreadHeader(Gtk.Grid):
+    def __init__(self, *args, **kwds):
+        super().__init__(*args, **kwds)
+        self.get_style_context().add_class('thread-header')
+
+        self.title = Gtk.Label(label='...')
+        self.title.set_line_wrap(True)
+        self.title.set_xalign(0)
+        self.title.get_style_context().add_class('thread-title')
+
+        label = Gtk.Image.new_from_icon_name(icon_name='go-previous', size=Gtk.IconSize.BUTTON)
+        label.get_style_context().add_class('thread-back')
+
+        back_event = Gtk.EventBox()
+        back_event.add(label)
+        back_event.connect('button-release-event', self.back_click)
+
+        self.attach(back_event, 0, 0, 1, 1)
+        self.attach(self.title, 0, 1, 6, 1)
+
+        self.show_all()
+
+    def back_click(self, box, event):
+        window = self.get_toplevel()
+        window.set_news()
+
+    def set_title(self, title):
+        self.title.set_label(title)
+
 class CommentThread(Gtk.Grid):
     def __init__(self, *args, **kwds):
         super().__init__(*args, **kwds)
@@ -133,46 +161,35 @@ class CommentThread(Gtk.Grid):
         scrolled_window = Gtk.ScrolledWindow()
         scrolled_window.get_style_context().add_class('thread-comments')
         scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        scrolled_window.set_hexpand(True)
-
-        label = Gtk.Label(label='< Go back')
-        label.set_hexpand(True)
-        label.set_xalign(0)
-        label.get_style_context().add_class('thread-back')
-
-        back_event = Gtk.EventBox()
-        back_event.add(label)
-        back_event.connect('button-release-event', self.back_click)
 
         self.add(scrolled_window)
 
-        self.vbox = Gtk.VBox()
+        self.header = ThreadHeader()
+        self.header.set_hexpand(True)
+        self.comments_container = Gtk.VBox()
+        self.comments_container.set_homogeneous(False)
         header_comments_vbox = Gtk.VBox()
+        header_comments_vbox.add(self.header)
+        header_comments_vbox.add(self.comments_container)
+
         scrolled_window.add(header_comments_vbox)
-        header_comments_vbox.add(back_event)
-        header_comments_vbox.add(self.vbox)
         self.show_all()
 
-    def back_click(self, box, event):
-        window = self.get_toplevel()
-        window.set_news()
-        for child in self.vbox.get_children():
-            GLib.idle_add(child.destroy)
-
-    def load_thread(self, thread_id):
+    def load_thread(self, thread_id, thread_title):
+        self.header.set_title(thread_title)
         q.put((self._load_thread, thread_id))
 
     def _load_thread(self, thread_id):
+        for child in self.comments_container.get_children():
+            GLib.idle_add(child.destroy)
         story = get_story(thread_id)
         self._set_comments(story.kids)
 
     def _set_comments(self, comments):
-        for child in self.vbox.get_children():
-            GLib.idle_add(child.destroy)
 
         for i in comments:
             widget1 = CommentItem(i)
-            self.vbox.pack_start(widget1, 0, 0, 0)  ## fill and expand
+            self.comments_container.pack_start(widget1, 0, 0, 0)  ## fill and expand
 
 class NewsItem(Gtk.Grid):
     def __init__(self, _item_id, *args, **kwds):
@@ -214,7 +231,7 @@ class NewsItem(Gtk.Grid):
 
     def comments_click(self, eventbox, event):
         window = self.get_toplevel()
-        window.set_thread(self.thread_id)
+        window.set_thread(self.thread_id, self.thread_title)
 
     def title_click(self, eventbox, event):
         window = self.get_toplevel()
@@ -226,6 +243,7 @@ class NewsItem(Gtk.Grid):
 
     def set_content(self, story: Story):
         self.article_url = story.url
+        self.thread_title = story.title
         self.title.set_label(story.title)
         self.title.get_style_context().add_class('news-item-title')
         self.url.set_label(story.url_domain)
@@ -319,7 +337,7 @@ def background_fn():
     while True:
         fn, arg = q.get()
         fn(arg)
-        time.sleep(0.1)
+        #time.sleep(0.1)
 
 
 def main():
