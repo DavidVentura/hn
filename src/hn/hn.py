@@ -234,7 +234,7 @@ class NewsItem(Gtk.Grid):
         self.comments.set_label(str(comment_count))
 
 
-class Comment(Gtk.VBox):
+class CommentItem(Gtk.VBox):
     def __init__(self, _item_id, *args, **kwds):
         super().__init__(*args, **kwds)
 
@@ -302,7 +302,7 @@ class Comment(Gtk.VBox):
             self.show_all()
 
         for i in kids:
-            wid = Comment(i)
+            wid = CommentItem(i)
             wid.set_visible(True)
             self.replies.pack_start(wid, 0, 0, 0)
         self.replies_container.set_reveal_child(True)
