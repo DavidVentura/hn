@@ -66,7 +66,7 @@ def get_comment(_id) -> Comment:
     dead = False
     markup = ''
     user = ''
-    if 'text' not in raw_data:  # deleted
+    if 'text' not in raw_data:
         deleted = True
         markup = 'deleted'
         user = 'deleted'
