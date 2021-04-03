@@ -1,4 +1,5 @@
 #!/usr/bin/env python3.7
+import time
 import queue
 from pathlib import Path
 
@@ -7,7 +8,8 @@ import gi
 from threading import Thread
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, GLib, Gdk
+gi.require_version("WebKit2", "4.0")
+from gi.repository import Gtk, GLib, Gdk, WebKit2
 
 from pango import html_to_pango
 from api import top_stories, get_id
@@ -18,6 +20,7 @@ STYLE_FILE = Path(__file__).parent / 'css' / 'style.css'
 class AppWindow(Gtk.ApplicationWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.old_child = None
         self.connect("destroy", Gtk.main_quit)
         self.setup_styles()
         self.set_default_size(360, 640)
@@ -30,9 +33,11 @@ class AppWindow(Gtk.ApplicationWindow):
 
         self.ct = CommentThread()
         self.news_list = NewsList()
+        self.www = WebsiteView() 
 
         self.stack.add(self.news_list)
         self.stack.add(self.ct)
+        self.stack.add(self.www)
 
         self.add(self.stack)
         self.show_all()
@@ -52,6 +57,45 @@ class AppWindow(Gtk.ApplicationWindow):
     
     def set_news(self):
         self.stack.set_visible_child(self.news_list)
+
+    def set_website(self, url):
+        self.www.load_uri(url)
+        self.old_child = self.stack.get_visible_child()
+        self.stack.set_visible_child(self.www)
+
+    def pop_website(self):
+        assert self.old_child
+        self.stack.set_visible_child(self.old_child)
+
+
+class WebsiteView(Gtk.Grid):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        scrolled = Gtk.ScrolledWindow()
+
+        self.www = WebKit2.WebView()
+        self.www.set_hexpand(True)
+        self.www.set_vexpand(True)
+
+        scrolled.add(self.www)
+
+        back = Gtk.Label(label='Go back')
+        back.set_hexpand(True)
+
+        back_event = Gtk.EventBox()
+        back_event.add(back)
+        back_event.connect('button-release-event', self.back_click)
+
+        self.attach(back_event, 0, 0, 1, 1)
+        self.attach(scrolled, 0, 1, 1, 1)
+
+    def load_uri(self, uri):
+        self.www.load_uri(uri)
+
+    def back_click(self, box, event):
+        self.www.stop_loading()
+        window = self.get_toplevel()
+        window.pop_website()
 
 
 class NewsList(Gtk.Grid):
@@ -167,7 +211,8 @@ class NewsItem(Gtk.Grid):
         window.set_thread(self.thread_id)
 
     def title_click(self, eventbox, event):
-        print("TODO Should go now to ", self.article_url)
+        window = self.get_toplevel()
+        window.set_website(self.article_url)
 
     def _set_content(self, _item_id):
         data = get_id(_item_id)
@@ -206,6 +251,7 @@ class Comment(Gtk.VBox):
         self.comment.set_line_wrap(True)
         self.comment.set_selectable(True)
         self.comment.set_xalign(0)
+        self.comment.connect('activate-link', self.activate_link)
         self.comment_body.attach(self.comment, 1, 2, 20, 1)
 
         self.replies_visible = True
@@ -265,6 +311,11 @@ class Comment(Gtk.VBox):
         self.replies_visible = not self.replies_visible
         self.replies_container.set_reveal_child(self.replies_visible)
 
+    def activate_link(self, label, link):
+        window = self.get_toplevel()
+        window.set_website(link)
+        return True
+
 
 class Application(Gtk.Application):
     def __init__(self, *args, **kwargs):
@@ -280,6 +331,7 @@ def background_fn():
     while True:
         fn, arg = q.get()
         fn(arg)
+        time.sleep(0.01)
 
 
 def main():
