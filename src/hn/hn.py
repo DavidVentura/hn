@@ -11,7 +11,7 @@ gi.require_version("Gtk", "3.0")
 gi.require_version("WebKit2", "4.0")
 from gi.repository import Gtk, GLib, Gdk, WebKit2
 
-from api import top_stories, get_comment, get_id, Comment
+from api import top_stories, get_comment, get_story, Comment, Story
 q = queue.Queue()
 
 STYLE_FILE = Path(__file__).parent / 'css' / 'style.css'
@@ -156,8 +156,8 @@ class CommentThread(Gtk.Grid):
         window.set_news()
 
     def set_comments(self, thread_id):
-        data = get_id(thread_id)
-        self._set_comments(data.get('kids', []))
+        story = get_story(thread_id)
+        self._set_comments(story.kids)
 
     def _set_comments(self, comments):
         for child in self.vbox.get_children():
@@ -214,23 +214,15 @@ class NewsItem(Gtk.Grid):
         window.set_website(self.article_url)
 
     def _set_content(self, _item_id):
-        data = get_id(_item_id)
-        GLib.idle_add(self.set_content, data, _item_id)
+        story = get_story(_item_id)
+        GLib.idle_add(self.set_content, story)
 
-    def set_content(self, data, _item_id):
-        comment_count = data.get('descendants', 0)
-        kids = data.get('kids', [])
-        score = data['score']
-        title = data['title']
-        if data.get('url'):
-            self.article_url = data['url']
-            url = data['url'].split('/')[2]
-        else:
-            url = 'self'
-        self.title.set_label(title)
+    def set_content(self, story: Story):
+        self.article_url = story.url
+        self.title.set_label(story.title)
         self.title.get_style_context().add_class('news-item-title')
-        self.url.set_label(url)
-        self.comments.set_label(str(comment_count))
+        self.url.set_label(story.url_domain)
+        self.comments.set_label(str(story.comment_count))
 
 
 class CommentItem(Gtk.VBox):

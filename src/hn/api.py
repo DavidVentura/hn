@@ -20,7 +20,12 @@ class Comment:
 
 @dataclass(frozen=True)
 class Story:
-    pass
+    title: str
+    url: str
+    url_domain: str
+    kids: List[int]
+    comment_count: int
+    score: int
 
 def top_stories():
     if os.path.exists('topstories.json'):
@@ -40,7 +45,20 @@ def get_id(_id):
     return data
 
 def get_story(_id) -> Story:
-    raw = get_id(_id)
+    raw_data = get_id(_id)
+    comment_count = raw_data.get('descendants', 0)
+    kids = raw_data.get('kids', [])
+    score = raw_data['score']
+    title = raw_data['title']
+    if raw_data.get('url'):
+        url = raw_data['url']
+        url_domain = raw_data['url'].split('/')[2]
+    else:
+        url = 'self'
+        url_domain = 'self'
+
+    return Story(title=title, url=url, url_domain=url_domain,
+                 kids=kids, comment_count=comment_count, score=score)
 
 def get_comment(_id) -> Comment:
     raw_data = get_id(_id)
