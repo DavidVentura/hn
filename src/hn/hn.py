@@ -304,10 +304,10 @@ class CommentItem(Gtk.VBox):
 
         if comment.kids:
             self.revealer_event = Gtk.EventBox()
-            revealer_label = Gtk.Label(label='Toggle replies')
-            revealer_label.get_style_context().add_class('comment-item-toggle')
+            self.revealer_label = Gtk.Image.new_from_icon_name(icon_name='go-up', size=Gtk.IconSize.SMALL_TOOLBAR)
+            self.revealer_label.get_style_context().add_class('comment-item-toggle')
             self.revealer_event.connect('button-release-event', self.reveal_replies_click)
-            self.revealer_event.add(revealer_label)
+            self.revealer_event.add(self.revealer_label)
             self.comment_body.attach(self.revealer_event, 1, 3, 20, 1)
             self.show_all()
 
@@ -320,6 +320,10 @@ class CommentItem(Gtk.VBox):
     def reveal_replies_click(self, box, event):
         self.replies_visible = not self.replies_visible
         self.replies_container.set_reveal_child(self.replies_visible)
+        if self.replies_visible:
+            self.revealer_label.get_style_context().remove_class('rotate')
+        else:
+            self.revealer_label.get_style_context().add_class('rotate')
 
     def activate_link(self, label, link):
         window = self.get_toplevel()
