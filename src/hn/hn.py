@@ -219,7 +219,7 @@ class NewsItem(Gtk.Grid):
         self.comments = Gtk.Label()
         self.comments.set_vexpand(True)
         self.comments.set_hexpand(True)
-        self.comments.set_xalign(0)
+        self.comments.set_xalign(0.5)
         self.comments.get_style_context().add_class('news-item-commentcount')
 
         self.comments_event = Gtk.EventBox()
