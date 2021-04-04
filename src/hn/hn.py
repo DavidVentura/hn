@@ -16,6 +16,17 @@ q = queue.Queue()
 
 STYLE_FILE = Path(__file__).parent / 'css' / 'style.css'
 
+def released_outside_widget(eventbox, event):
+    if event.x < 0 or event.y < 0:
+        return True
+    widget_w = eventbox.get_window().get_width()
+    widget_h = eventbox.get_window().get_height()
+    if event.x > widget_w:
+        return True
+    if event.y > widget_h:
+        return True
+    return False
+
 class AppWindow(Gtk.ApplicationWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -91,6 +102,8 @@ class WebsiteView(Gtk.Grid):
         self.www.load_uri(uri)
 
     def back_click(self, box, event):
+        if released_outside_widget(box, event):
+            return
         self.www.stop_loading()
         window = self.get_toplevel()
         window.pop_website()
@@ -160,10 +173,14 @@ class ThreadHeader(Gtk.Grid):
         self.show_all()
 
     def article_click(self, box, event):
+        if released_outside_widget(box, event):
+            return
         window = self.get_toplevel()
         window.set_website(self.article_url)
 
     def back_click(self, box, event):
+        if released_outside_widget(box, event):
+            return
         window = self.get_toplevel()
         window.set_news()
 
@@ -241,6 +258,7 @@ class NewsItem(Gtk.Grid):
 
         self.comments_event = Gtk.EventBox()
         self.comments_event.add(self.comments)
+        self.comments_event.connect('button-press-event', self.comments_click)
         self.comments_event.connect('button-release-event', self.comments_click)
         self.attach(self.comments_event, 9, 0, 1, 4)
 
@@ -252,10 +270,18 @@ class NewsItem(Gtk.Grid):
         q.put((self._set_content, self.thread_id))
 
     def comments_click(self, eventbox, event):
+        if event.get_event_type() is Gdk.EventType.BUTTON_PRESS:
+            self._touchdown = event.get_time()
+            return
+        if released_outside_widget(eventbox, event):
+            return
+        print(event.get_time() - self._touchdown)
         window = self.get_toplevel()
         window.set_thread(self.story)
 
     def title_click(self, eventbox, event):
+        if released_outside_widget(eventbox, event):
+            return
         window = self.get_toplevel()
         window.set_website(self.article_url)
 
@@ -351,6 +377,8 @@ class CommentItem(Gtk.VBox):
             self.replies.pack_start(wid, 0, 0, 0)
 
     def reveal_replies_click(self, box, event):
+        if released_outside_widget(box, event):
+            return
         self.replies_visible = not self.replies_visible
         self.replies_container.set_reveal_child(self.replies_visible)
         if self.replies_visible:
