@@ -201,7 +201,7 @@ class CommentThread(Gtk.Grid):
         for child in self.comments_container.get_children():
             GLib.idle_add(child.destroy)
         story = get_story(thread_id)
-        self._set_comments(story.kids)
+        GLib.idle_add(self._set_comments, story.kids)
 
     def _set_comments(self, comments):
         for i in comments:
