@@ -279,11 +279,12 @@ class CommentItem(Gtk.VBox):
 
         self.set_vexpand(False)
         self.comment_body = Gtk.Grid()
-
         self.comment_body.get_style_context().add_class('comment-item-body')
+
         self._time = Gtk.Label()
         self._time.set_margin_bottom(10)
         self._time.set_xalign(0)
+        self._time.get_style_context().add_class('comment-item-time_user')
         self.comment_body.attach(self._time, 1, 1, 1, 1)
 
         self.comment = Gtk.Label(label='...')
