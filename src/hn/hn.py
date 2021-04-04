@@ -320,7 +320,7 @@ class CommentItem(Gtk.VBox):
         if comment.dead:
             self.get_style_context().add_class('comment-item-dead')
 
-        self._time.set_markup(f"<small><span foreground='#999'>2m ago</span> - <b>{comment.user}</b></small>")
+        self._time.set_markup(f"<small><span foreground='#999'>{comment.age}</span> - <b>{comment.user}</b></small>")
         self.comment.set_markup(comment.markup)
 
         if comment.kids:

@@ -1,3 +1,4 @@
+import time
 import json
 import os
 
@@ -14,6 +15,7 @@ session = requests.Session()
 class Comment:
     user: str
     markup: str
+    age: str
     kids: List[int]
     dead: bool
     deleted: bool
@@ -61,6 +63,26 @@ def get_story(_id) -> Story:
     return Story(story_id=_id, title=title, url=url, url_domain=url_domain,
                  kids=kids, comment_count=comment_count, score=score)
 
+def _to_relative_time(tstamp):
+    now = time.time()
+    delta = now - tstamp
+    if delta < 0:
+        return 'in the future'
+
+    if delta < 60:
+        return f'{int(delta)}s ago'
+    delta /= 60
+    if delta < 60:
+        return f'{int(delta)}m ago'
+    delta /= 60
+    if delta < 24:
+        return f'{int(delta)}h ago'
+    delta /= 24
+    if delta < 360:
+        return f'{int(delta)}d ago'
+    delta /= 360
+    return f'{int(delta)}y ago'
+
 def get_comment(_id) -> Comment:
     raw_data = get_id(_id)
     deleted = False
@@ -75,8 +97,9 @@ def get_comment(_id) -> Comment:
         markup = html_to_pango(raw_data['text'])
         user = raw_data['by']
 
+    age = _to_relative_time(raw_data['time'])
     dead = raw_data.get('dead', False)
     kids = raw_data.get('kids', [])
 
     return Comment(user=user, markup=markup, kids=kids,
-                   dead=dead, deleted=deleted)
+                   dead=dead, deleted=deleted, age=age)
