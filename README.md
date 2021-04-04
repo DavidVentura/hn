@@ -25,3 +25,4 @@
 * [Pango markup](https://developer.gnome.org/pygtk/stable/pango-markup-language.html)
 * [BS4](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
 * [Gnome icon naming spec](https://developer.gnome.org/icon-naming-spec/)
+* [GtkInspector - Gtk debugger](https://wiki.gnome.org/Projects/GTK/Inspector)
