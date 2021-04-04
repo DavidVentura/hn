@@ -274,12 +274,13 @@ class CommentItem(Gtk.VBox):
         super().__init__(*args, **kwds)
 
         self.nesting = nesting
+        self.get_style_context().add_class(f'comment-item')
         self.get_style_context().add_class(f'comment-item-nested-{nesting}')
 
         self.set_vexpand(False)
         self.comment_body = Gtk.Grid()
 
-        self.comment_body.get_style_context().add_class('comment-item')
+        self.comment_body.get_style_context().add_class('comment-item-body')
         self._time = Gtk.Label()
         self._time.set_margin_bottom(10)
         self._time.set_xalign(0)

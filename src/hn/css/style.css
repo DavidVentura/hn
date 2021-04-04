@@ -11,30 +11,31 @@
 	padding: 5px;
 	background-color: #ffb64d;
 }
-.comment-item {
+.comment-item-body {
+	margin-left: -3px;
+	border-left: 5px solid #f00;
 	padding: 10px;
-	border-left: 4px solid #f00;
-	margin-left: -4px;
-	margin-bottom: 5px;
 	background-color: #f6f6ef;
 	box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.18);
+	margin-bottom: 5px;
 }
 
-.comment-item-nested-0 .comment-item { border-left-color: #f44336 }
-.comment-item-nested-1 .comment-item { border-left-color: #d500f9 }
-.comment-item-nested-2 .comment-item { border-left-color: #304ffe }
-.comment-item-nested-3 .comment-item { border-left-color: #0288d1 }
-.comment-item-nested-4 .comment-item { border-left-color: #26A69A }
-.comment-item-nested-5 .comment-item { border-left-color: #00c853 }
-.comment-item-nested-6 .comment-item { border-left-color: #fff3e0 }
-.comment-item-nested-7 .comment-item { border-left-color: #8d6e63 }
+
+.comment-item-nested-0 .comment-item-body { border-left-color: #f44336 }
+.comment-item-nested-1 .comment-item-body { border-left-color: #d500f9 }
+.comment-item-nested-2 .comment-item-body { border-left-color: #304ffe }
+.comment-item-nested-3 .comment-item-body { border-left-color: #0288d1 }
+.comment-item-nested-4 .comment-item-body { border-left-color: #26A69A }
+.comment-item-nested-5 .comment-item-body { border-left-color: #00c853 }
+.comment-item-nested-6 .comment-item-body { border-left-color: #fff3e0 }
+.comment-item-nested-7 .comment-item-body { border-left-color: #8d6e63 }
 
 .comment-item-toggle {
 	padding: 3px;
 }
 .comment-replies {
 	border-left: 1px solid #ccc;
-	margin-left: 10px;
+	padding-left: 8px
 }
 
 .comment-item-dead {
@@ -44,8 +45,8 @@
 .thread-comments {
 	padding-left: 5px;
 	padding-right: 5px;
-	margin-left: 5px;
-	margin-right: 5px;
+	margin-left: 3px;
+	margin-right: 3px;
 }
 .thread-header {
 	background-color: #ffb64d;
