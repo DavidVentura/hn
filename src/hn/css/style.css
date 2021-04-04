@@ -13,6 +13,7 @@
 }
 .comment-item-body {
 	margin-left: -3px;
+	margin-right: 5px;
 	border-left: 5px solid #f00;
 	padding: 10px;
 	background-color: #f6f6ef;
@@ -52,9 +53,9 @@
 
 .thread-comments {
 	padding-left: 5px;
-	padding-right: 5px;
 	margin-left: 3px;
 	margin-right: 3px;
+	background-color: white;
 }
 .thread-header {
 	background-color: #ffb64d;

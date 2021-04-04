@@ -244,8 +244,12 @@ class NewsItem(Gtk.Grid):
         self.comments_event.connect('button-release-event', self.comments_click)
         self.attach(self.comments_event, 9, 0, 1, 4)
 
+
+        self.connect('show', self.on_show)
         self.show_all()
-        q.put((self._set_content, _item_id))
+
+    def on_show(self, what):
+        q.put((self._set_content, self.thread_id))
 
     def comments_click(self, eventbox, event):
         window = self.get_toplevel()
@@ -272,6 +276,8 @@ class NewsItem(Gtk.Grid):
 class CommentItem(Gtk.VBox):
     def __init__(self, _item_id, nesting, *args, **kwds):
         super().__init__(*args, **kwds)
+        self.rendered = False
+        self.comment_id = _item_id
 
         self.nesting = nesting
         self.get_style_context().add_class(f'comment-item')
@@ -281,7 +287,7 @@ class CommentItem(Gtk.VBox):
         self.comment_body = Gtk.Grid()
         self.comment_body.get_style_context().add_class('comment-item-body')
 
-        self._time = Gtk.Label()
+        self._time = Gtk.Label(label='...')
         self._time.set_margin_bottom(10)
         self._time.set_xalign(0)
         self._time.get_style_context().add_class('comment-item-time_user')
@@ -305,11 +311,16 @@ class CommentItem(Gtk.VBox):
 
         self.add(self.comment_body)
         self.add(self.replies_container)
+        self.connect('show', self.on_show)
         self.show_all()
 
-        q.put((self._set_content, _item_id))
+
+    def on_show(self, what):
+        if not self.rendered:
+            q.put((self._set_content, self.comment_id))
 
     def _set_content(self, _item_id):
+        self.rendered = True
         comment = get_comment(_item_id)
         GLib.idle_add(self.set_content, comment)
 
@@ -367,7 +378,7 @@ def background_fn():
     while True:
         fn, arg = q.get()
         fn(arg)
-        #time.sleep(0.1)
+        time.sleep(0.01)
 
 
 def main():
