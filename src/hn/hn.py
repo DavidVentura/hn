@@ -9,12 +9,19 @@ from threading import Thread
 
 gi.require_version("Gtk", "3.0")
 gi.require_version("WebKit2", "4.0")
-from gi.repository import Gtk, GLib, Gdk, WebKit2
+from gi.repository import Gtk, GLib, Gdk, WebKit2, GdkPixbuf
 
 from api import top_stories, get_comment, get_story, Comment, Story
 q = queue.Queue()
 
 STYLE_FILE = Path(__file__).parent / 'css' / 'style.css'
+ICONS_DIR = Path(__file__).parent / 'icons'
+
+def load_icon_to_pixbuf(name, width):
+    path = str(ICONS_DIR / name)
+    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(path, width, -1, True)
+    return pixbuf
+
 
 class AppWindow(Gtk.ApplicationWindow):
     def __init__(self, *args, **kwargs):
@@ -137,7 +144,7 @@ class ThreadHeader(Gtk.Grid):
         self.title.set_xalign(0)
         self.title.get_style_context().add_class('thread-title')
 
-        article_icon = Gtk.Image.new_from_icon_name(icon_name='applications-internet', size=Gtk.IconSize.SMALL_TOOLBAR)
+        article_icon = Gtk.Image.new_from_pixbuf(load_icon_to_pixbuf('open-article.svg', 24))
         article_icon.set_halign(Gtk.Align.END)
         article_icon.get_style_context().add_class('thread-article')
 
