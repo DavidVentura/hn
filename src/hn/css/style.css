@@ -1,3 +1,12 @@
+@define-color nested_0 #f44336;
+@define-color nested_1 #d500f9;
+@define-color nested_2 #304ffe;
+@define-color nested_3 #0288d1;
+@define-color nested_4 #26A69A;
+@define-color nested_5 #00c853;
+@define-color nested_6 #fff3e0;
+@define-color nested_7 #8d6e63;
+
 .news-item {
 	padding: 5px;
 	margin-bottom: 2px;
@@ -22,22 +31,32 @@
 }
 
 .comment-item-time_user { margin-bottom: 10px; }
-.comment-item-nested-0 .comment-item-body { border-left-color: #f44336 }
-.comment-item-nested-1 .comment-item-body { border-left-color: #d500f9 }
-.comment-item-nested-2 .comment-item-body { border-left-color: #304ffe }
-.comment-item-nested-3 .comment-item-body { border-left-color: #0288d1 }
-.comment-item-nested-4 .comment-item-body { border-left-color: #26A69A }
-.comment-item-nested-5 .comment-item-body { border-left-color: #00c853 }
-.comment-item-nested-6 .comment-item-body { border-left-color: #fff3e0 }
-.comment-item-nested-7 .comment-item-body { border-left-color: #8d6e63 }
-.comment-item-nested-0 .comment-item-time_user { color: #f44336 }
-.comment-item-nested-1 .comment-item-time_user { color: #d500f9 }
-.comment-item-nested-2 .comment-item-time_user { color: #304ffe }
-.comment-item-nested-3 .comment-item-time_user { color: #0288d1 }
-.comment-item-nested-4 .comment-item-time_user { color: #26A69A }
-.comment-item-nested-5 .comment-item-time_user { color: #00c853 }
-.comment-item-nested-6 .comment-item-time_user { color: #fff3e0 }
-.comment-item-nested-7 .comment-item-time_user { color: #8d6e63 }
+.comment-item-nested-0 .comment-item-body { border-left-color: @nested_0}
+.comment-item-nested-1 .comment-item-body { border-left-color: @nested_1}
+.comment-item-nested-2 .comment-item-body { border-left-color: @nested_2}
+.comment-item-nested-3 .comment-item-body { border-left-color: @nested_3}
+.comment-item-nested-4 .comment-item-body { border-left-color: @nested_4}
+.comment-item-nested-5 .comment-item-body { border-left-color: @nested_5}
+.comment-item-nested-6 .comment-item-body { border-left-color: @nested_6}
+.comment-item-nested-7 .comment-item-body { border-left-color: @nested_7}
+
+.comment-item-nested-0 .comment-item-time_user { color: @nested_0 }
+.comment-item-nested-1 .comment-item-time_user { color: @nested_1 }
+.comment-item-nested-2 .comment-item-time_user { color: @nested_2 }
+.comment-item-nested-3 .comment-item-time_user { color: @nested_3 }
+.comment-item-nested-4 .comment-item-time_user { color: @nested_4 }
+.comment-item-nested-5 .comment-item-time_user { color: @nested_5 }
+.comment-item-nested-6 .comment-item-time_user { color: @nested_6 }
+.comment-item-nested-7 .comment-item-time_user { color: @nested_7 }
+
+.comment-item-nested-0 .comment-replies {border-left-color: alpha(@nested_0, 0.2)}
+.comment-item-nested-1 .comment-replies {border-left-color: alpha(@nested_1, 0.2)}
+.comment-item-nested-2 .comment-replies {border-left-color: alpha(@nested_2, 0.2)}
+.comment-item-nested-3 .comment-replies {border-left-color: alpha(@nested_3, 0.2)}
+.comment-item-nested-4 .comment-replies {border-left-color: alpha(@nested_4, 0.2)}
+.comment-item-nested-5 .comment-replies {border-left-color: alpha(@nested_5, 0.2)}
+.comment-item-nested-6 .comment-replies {border-left-color: alpha(@nested_6, 0.2)}
+.comment-item-nested-7 .comment-replies {border-left-color: alpha(@nested_7, 0.2)}
 
 .comment-item-toggle {
 	padding: 3px;
