@@ -21,7 +21,7 @@
 	margin-bottom: 5px;
 }
 
-
+.comment-item-time_user { margin-bottom: 10px; }
 .comment-item-nested-0 .comment-item-body { border-left-color: #f44336 }
 .comment-item-nested-1 .comment-item-body { border-left-color: #d500f9 }
 .comment-item-nested-2 .comment-item-body { border-left-color: #304ffe }

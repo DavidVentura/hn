@@ -5,5 +5,6 @@
   <file>ui/NewsItem.ui</file>
   <file>ui/ThreadHeader.ui</file>
   <file>ui/CommentThread.ui</file>
+  <file>ui/CommentItem.ui</file>
   </gresource>
 </gresources>

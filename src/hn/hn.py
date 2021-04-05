@@ -228,49 +228,31 @@ class NewsItem(Gtk.Grid):
         self.comments.set_label(str(story.comment_count))
 
 
-class CommentItem(Gtk.VBox):
+@Gtk.Template(resource_path='/hn/ui/CommentItem.ui')
+class CommentItem(Gtk.Box):
+    __gtype_name__ = 'CommentItem'
+    time_lbl = Gtk.Template.Child()
+    comment = Gtk.Template.Child()
+    comment_body = Gtk.Template.Child()
+    replies_container = Gtk.Template.Child()
+    replies = Gtk.Template.Child()
+    revealer_img = Gtk.Template.Child()
+    revealer_event = Gtk.Template.Child()
     def __init__(self, _item_id, nesting, *args, **kwds):
         super().__init__(*args, **kwds)
         self.rendered = False
         self.comment_id = _item_id
+        self.replies_visible = True
 
         self.nesting = nesting
-        self.get_style_context().add_class(f'comment-item')
         self.get_style_context().add_class(f'comment-item-nested-{nesting}')
-
-        self.set_vexpand(False)
-        self.comment_body = Gtk.Grid()
-        self.comment_body.get_style_context().add_class('comment-item-body')
-
-        self._time = Gtk.Label(label='...')
-        self._time.set_margin_bottom(10)
-        self._time.set_xalign(0)
-        self._time.get_style_context().add_class('comment-item-time_user')
-        self.comment_body.attach(self._time, 1, 1, 1, 1)
-
-        self.comment = Gtk.Label(label='...')
-        self.comment.set_vexpand(True)
-        self.comment.set_line_wrap(True)
-        self.comment.set_selectable(True)
-        self.comment.set_xalign(0)
         self.comment.connect('activate-link', self.activate_link)
-        self.comment_body.attach(self.comment, 1, 2, 20, 1)
+        self.revealer_event.connect('button-release-event', self.reveal_replies_click)
 
-        self.replies_visible = True
-        self.replies_container = Gtk.Revealer()
-        self.replies = Gtk.VBox()
-        self.replies.set_vexpand(True)
-        self.replies.get_style_context().add_class('comment-replies')
-        self.replies_container.add(self.replies)
-        self.replies_container.set_reveal_child(False)
-
-        self.add(self.comment_body)
-        self.add(self.replies_container)
-        self.connect('show', self.on_show)
-        self.show_all()
+        self.on_show()
 
 
-    def on_show(self, what):
+    def on_show(self):
         if not self.rendered:
             q.put((self._set_content, self.comment_id))
 
@@ -287,18 +269,13 @@ class CommentItem(Gtk.VBox):
         if comment.dead:
             self.get_style_context().add_class('comment-item-dead')
 
-        self._time.set_markup(f"<small><span foreground='#999'>{comment.age}</span> - <b>{comment.user}</b></small>")
+        self.time_lbl.set_markup(f"<small><span foreground='#999'>{comment.age}</span> - <b>{comment.user}</b></small>")
         self.comment.set_markup(comment.markup)
 
         if comment.kids:
+            self.revealer_event.set_visible(True)
+            self.replies_container.set_visible(True)
             self.replies_container.set_reveal_child(True)
-            self.revealer_event = Gtk.EventBox()
-            self.revealer_label = Gtk.Image.new_from_icon_name(icon_name='go-up', size=Gtk.IconSize.SMALL_TOOLBAR)
-            self.revealer_label.get_style_context().add_class('comment-item-toggle')
-            self.revealer_event.connect('button-release-event', self.reveal_replies_click)
-            self.revealer_event.add(self.revealer_label)
-            self.comment_body.attach(self.revealer_event, 1, 3, 20, 1)
-            self.show_all()
 
         for i in comment.kids:
             wid = CommentItem(i, self.nesting + 1)
@@ -309,9 +286,9 @@ class CommentItem(Gtk.VBox):
         self.replies_visible = not self.replies_visible
         self.replies_container.set_reveal_child(self.replies_visible)
         if self.replies_visible:
-            self.revealer_label.get_style_context().remove_class('rotate')
+            self.revealer_img.get_style_context().remove_class('rotate')
         else:
-            self.revealer_label.get_style_context().add_class('rotate')
+            self.revealer_img.get_style_context().add_class('rotate')
 
     def activate_link(self, label, link):
         window = self.get_toplevel()
