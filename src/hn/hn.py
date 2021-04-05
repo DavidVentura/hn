@@ -7,9 +7,10 @@ import gi
 
 from threading import Thread
 
+gi.require_version("Handy", "1")
 gi.require_version("Gtk", "3.0")
 gi.require_version("WebKit2", "4.0")
-from gi.repository import Gtk, GLib, Gdk, WebKit2, GdkPixbuf, Gio
+from gi.repository import Gtk, GLib, Gdk, WebKit2, GdkPixbuf, Gio, Handy
 
 from api import top_stories, get_comment, get_story, Comment, Story
 q = queue.Queue()
@@ -18,6 +19,7 @@ SRC_DIR = Path(__file__).parent
 STYLE_FILE = Path(__file__).parent / 'css' / 'style.css'
 ICONS_DIR = Path(__file__).parent / 'icons'
 RESOURCES_FILE = Path(__file__).parent / 'resources'
+Handy.init()
 
 def load_icon_to_pixbuf(name, width):
     path = str(ICONS_DIR / name)
@@ -27,32 +29,22 @@ def load_icon_to_pixbuf(name, width):
 resource = Gio.Resource.load(str(RESOURCES_FILE))
 resource._register()
 
+@Gtk.Template(resource_path='/hn/ui/MainWindow.ui')
 class AppWindow(Gtk.ApplicationWindow):
+    __gtype_name__ = 'AppWindow'
+
+    ct = Gtk.Template.Child()
+    news_list = Gtk.Template.Child()
+    www = Gtk.Template.Child()
+    stack = Gtk.Template.Child()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.old_child = None
         self.setup_styles()
-        self.set_default_size(360, 640)
-
-        self.stack = Gtk.Stack()
-        self.stack.set_vexpand(True)
-        self.stack.set_hexpand(True)
-        self.stack.set_transition_duration(300)
-        self.stack.set_transition_type(Gtk.StackTransitionType.OVER_DOWN_UP)
-
-        self.ct = CommentThread()
-        self.news_list = NewsList()
-        self.www = WebsiteView() 
-
-        self.stack.add(self.news_list)
-        self.stack.add(self.ct)
-        self.stack.add(self.www)
-
-        self.add(self.stack)
+        self.set_default_size(360, 720)
         self.show_all()
-        self.stack.set_visible_child(self.news_list)
-    
+
     def setup_styles(self):
         css_provider = Gtk.CssProvider()
         context = Gtk.StyleContext()
@@ -79,26 +71,21 @@ class AppWindow(Gtk.ApplicationWindow):
         self.stack.set_visible_child(self.old_child)
 
 
+@Gtk.Template(resource_path='/hn/ui/WebsiteView.ui')
 class WebsiteView(Gtk.Grid):
+    __gtype_name__ = 'WebsiteView'
+    back_event = Gtk.Template.Child()
+    viewport = Gtk.Template.Child()
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        scrolled = Gtk.ScrolledWindow()
-
+        self.back_event.connect('button-release-event', self.back_click)
+        # https://stackoverflow.com/questions/60126579/gtk-builder-error-quark-invalid-object-type-webkitwebview
+        # Can't have the WevView in ui file without hacks, doing it programatically is clearer
         self.www = WebKit2.WebView()
         self.www.set_hexpand(True)
         self.www.set_vexpand(True)
-
-        scrolled.add(self.www)
-
-        back = Gtk.Label(label='Go back')
-        back.set_hexpand(True)
-
-        back_event = Gtk.EventBox()
-        back_event.add(back)
-        back_event.connect('button-release-event', self.back_click)
-
-        self.attach(back_event, 0, 0, 1, 1)
-        self.attach(scrolled, 0, 1, 1, 1)
+        self.viewport.add(self.www)
 
     def load_uri(self, uri):
         self.www.load_uri(uri)

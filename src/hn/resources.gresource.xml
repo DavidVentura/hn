@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/hn">
+  <file>ui/MainWindow.ui</file>
   <file>ui/NewsList.ui</file>
   <file>ui/NewsItem.ui</file>
   <file>ui/ThreadHeader.ui</file>
   <file>ui/CommentThread.ui</file>
   <file>ui/CommentItem.ui</file>
+  <file>ui/WebsiteView.ui</file>
   </gresource>
 </gresources>
