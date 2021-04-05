@@ -5,6 +5,7 @@
 - Copied colors / layout / thread depth from [Materialistic](https://github.com/hidroh/materialistic)
 - Works in read-only fashion
   - News list can only reload by over-shooting the scroll, but there's no visual indicator
+- Ad blocker in built-in browser via [shitty webextension](https://github.com/DavidVentura/webextension-adblocker)
 
 # Screenshots
 
@@ -18,8 +19,6 @@
 
 # Ideas
 
-* Content blocker on the WebView, but seems
-[complicated](https://lists.webkit.org/pipermail/webkit-gtk/2013-March/001395.html) to implement.
 * GTK4? unavailable on my distro
 
 # Useful links

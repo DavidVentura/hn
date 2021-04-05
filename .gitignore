@@ -4,3 +4,4 @@ venv
 __pycache__/*
 src/hn/resources
 *~
+*.so

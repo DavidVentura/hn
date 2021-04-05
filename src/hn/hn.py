@@ -19,6 +19,7 @@ SRC_DIR = Path(__file__).parent
 STYLE_FILE = Path(__file__).parent / 'css' / 'style.css'
 ICONS_DIR = Path(__file__).parent / 'icons'
 RESOURCES_FILE = Path(__file__).parent / 'resources'
+WEBEXT_DIR = '/home/david/git/webkit-webextension'
 Handy.init()  # Must call this otherwise the Template() calls don't know how to resolve any Hdy* widgets
 
 def load_icon_to_pixbuf(name, width):
@@ -82,7 +83,9 @@ class WebsiteView(Gtk.Grid):
         self.back_event.connect('button-release-event', self.back_click)
         # https://stackoverflow.com/questions/60126579/gtk-builder-error-quark-invalid-object-type-webkitwebview
         # Can't have the WevView in ui file without hacks, doing it programatically is clearer
-        self.www = WebKit2.WebView()
+        ctx = WebKit2.WebContext.get_default()
+        ctx.set_web_extensions_directory(WEBEXT_DIR)
+        self.www = WebKit2.WebView.new_with_context(ctx)
         self.www.set_hexpand(True)
         self.www.set_vexpand(True)
         self.viewport.add(self.www)
