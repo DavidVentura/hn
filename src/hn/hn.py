@@ -19,7 +19,7 @@ SRC_DIR = Path(__file__).parent
 STYLE_FILE = Path(__file__).parent / 'css' / 'style.css'
 ICONS_DIR = Path(__file__).parent / 'icons'
 RESOURCES_FILE = Path(__file__).parent / 'resources'
-Handy.init()
+Handy.init()  # Must call this otherwise the Template() calls don't know how to resolve any Hdy* widgets
 
 def load_icon_to_pixbuf(name, width):
     path = str(ICONS_DIR / name)
