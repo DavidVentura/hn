@@ -30,7 +30,7 @@ resource = Gio.Resource.load(str(RESOURCES_FILE))
 resource._register()
 
 @Gtk.Template(resource_path='/hn/ui/MainWindow.ui')
-class AppWindow(Gtk.ApplicationWindow):
+class AppWindow(Handy.ApplicationWindow):
     __gtype_name__ = 'AppWindow'
 
     ct = Gtk.Template.Child()
