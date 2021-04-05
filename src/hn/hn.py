@@ -187,46 +187,24 @@ class CommentThread(Gtk.ScrolledWindow):
             widget1.set_visible(True)
             self.comments_container.pack_start(widget1, 0, 0, 0)  ## fill and expand
 
+@Gtk.Template(resource_path='/hn/ui/NewsItem.ui')
 class NewsItem(Gtk.Grid):
+    __gtype_name__ = 'NewsItem'
+    title = Gtk.Template.Child()
+    url = Gtk.Template.Child()
+    comments = Gtk.Template.Child()
+    comments_event = Gtk.Template.Child()
+    title_event = Gtk.Template.Child()
+
     def __init__(self, _item_id, *args, **kwds):
         super().__init__(*args, **kwds)
-        self.get_style_context().add_class('news-item')
-
-        self.set_column_homogeneous(True)
         self.article_url = None
         self.thread_id = _item_id
-
-        self.title = Gtk.Label()
-        self.title.set_line_wrap(True)
-        self.title.set_xalign(0)
-        self.title.set_hexpand(True)
-
-        self.title_event = Gtk.EventBox()
         self.title_event.connect('button-release-event', self.title_click)
-        self.title_event.add(self.title)
-        self.attach(self.title_event, 0, 0, 8, 2)
-
-        self.url = Gtk.Label()
-        self.url.set_xalign(0)
-        self.url.set_hexpand(True)
-        self.attach(self.url, 0, 3, 7, 1)
-
-        self.comments = Gtk.Label()
-        self.comments.set_vexpand(True)
-        self.comments.set_hexpand(True)
-        self.comments.set_xalign(0.5)
-        self.comments.get_style_context().add_class('news-item-commentcount')
-
-        self.comments_event = Gtk.EventBox()
-        self.comments_event.add(self.comments)
         self.comments_event.connect('button-release-event', self.comments_click)
-        self.attach(self.comments_event, 9, 0, 1, 4)
+        self.on_show()
 
-
-        self.connect('show', self.on_show)
-        self.show_all()
-
-    def on_show(self, what):
+    def on_show(self):
         q.put((self._set_content, self.thread_id))
 
     def comments_click(self, eventbox, event):

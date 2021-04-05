@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.2 -->
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <template class="NewsItem" parent="GtkGrid">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="column_homogeneous">True</property>
+    <signal name="show" handler="on_show" swapped="no"/>
+    <child>
+      <object class="GtkEventBox" id="title_event">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <signal name="button-release-event" handler="title_click" swapped="no"/>
+        <child>
+          <object class="GtkLabel" id="title">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">start</property>
+            <property name="hexpand">True</property>
+            <property name="label" translatable="yes">...</property>
+            <property name="wrap">True</property>
+            <property name="xalign">0</property>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">0</property>
+        <property name="width">8</property>
+        <property name="height">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="url">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="halign">start</property>
+        <property name="hexpand">True</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">2</property>
+        <property name="width">8</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkEventBox" id="comments_event">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <signal name="button-release-event" handler="comments_click" swapped="no"/>
+        <child>
+          <object class="GtkLabel" id="comments">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
+            <property name="label" translatable="yes">label</property>
+            <style>
+              <class name="news-item-commentcount"/>
+            </style>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="left_attach">8</property>
+        <property name="top_attach">0</property>
+        <property name="height">3</property>
+      </packing>
+    </child>
+    <style>
+      <class name="news-item"/>
+    </style>
+  </template>
+</interface>
