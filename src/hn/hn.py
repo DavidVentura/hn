@@ -9,21 +9,26 @@ from threading import Thread
 
 gi.require_version("Gtk", "3.0")
 gi.require_version("WebKit2", "4.0")
-from gi.repository import Gtk, GLib, Gdk, WebKit2, GdkPixbuf
+from gi.repository import Gtk, GLib, Gdk, WebKit2, GdkPixbuf, Gio
 
 from api import top_stories, get_comment, get_story, Comment, Story
 q = queue.Queue()
 
+SRC_DIR = Path(__file__).parent
 STYLE_FILE = Path(__file__).parent / 'css' / 'style.css'
 ICONS_DIR = Path(__file__).parent / 'icons'
+RESOURCES_FILE = Path(__file__).parent / 'resources'
 
 def load_icon_to_pixbuf(name, width):
     path = str(ICONS_DIR / name)
     pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(path, width, -1, True)
     return pixbuf
 
+resource = Gio.Resource.load(str(RESOURCES_FILE))
+resource._register()
 
 class AppWindow(Gtk.ApplicationWindow):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.old_child = None
@@ -46,6 +51,7 @@ class AppWindow(Gtk.ApplicationWindow):
 
         self.add(self.stack)
         self.show_all()
+        self.stack.set_visible_child(self.news_list)
     
     def setup_styles(self):
         css_provider = Gtk.CssProvider()
@@ -103,17 +109,15 @@ class WebsiteView(Gtk.Grid):
         window.pop_website()
 
 
+@Gtk.Template(resource_path='/hn/ui/NewsList.ui')
 class NewsList(Gtk.Grid):
+    __gtype_name__ = 'NewsList'
+    scrolled_window = Gtk.Template.Child()
+    vbox = Gtk.Template.Child()
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        scrolled_window = Gtk.ScrolledWindow()
-        scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        scrolled_window.connect('edge-overshot', self.edge_overshot)
-
-        self.add(scrolled_window)
-        self.vbox = Gtk.VBox()
-        scrolled_window.add(self.vbox)
-        self.show_all()
+        self.scrolled_window.connect('edge-overshot', self.edge_overshot)
 
     def edge_overshot(self, pos, user_data):
         if user_data != Gtk.PositionType.TOP:
@@ -179,6 +183,7 @@ class ThreadHeader(Gtk.Grid):
         self.title.set_label(story.title)
 
 class CommentThread(Gtk.Grid):
+
     def __init__(self, *args, **kwds):
         super().__init__(*args, **kwds)
 
@@ -373,7 +378,7 @@ class CommentItem(Gtk.VBox):
 
 class Application(Gtk.Application):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, application_id="org.example.myapp", **kwargs)
+        super().__init__(*args, application_id="hn.app", **kwargs)
 
     def do_activate(self):
         self.window = AppWindow(application=self, title="Main Window")
@@ -392,6 +397,7 @@ def main():
     t = Thread(target=background_fn)
     t.daemon = True
     t.start()
+
     app = Application()
     app.run()
 
