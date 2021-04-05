@@ -164,28 +164,12 @@ class ThreadHeader(Gtk.Grid):
         self.article_url = story.url
         self.title.set_label(story.title)
 
-class CommentThread(Gtk.Grid):
-
-    def __init__(self, *args, **kwds):
-        super().__init__(*args, **kwds)
-
-        scrolled_window = Gtk.ScrolledWindow()
-        scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-
-        self.add(scrolled_window)
-
-        self.header = ThreadHeader()
-        self.header.set_hexpand(True)
-        self.comments_container = Gtk.VBox()
-        self.comments_container.set_vexpand(True)
-        self.comments_container.get_style_context().add_class('thread-comments')
-        header_comments_vbox = Gtk.VBox()
-        header_comments_vbox.pack_start(self.header, 0, 0, 0)
-        header_comments_vbox.pack_start(self.comments_container, 1, 1, 0)
-        # Allow comments_container to grow and take all space
-
-        scrolled_window.add(header_comments_vbox)
-        self.show_all()
+@Gtk.Template(resource_path='/hn/ui/CommentThread.ui')
+class CommentThread(Gtk.ScrolledWindow):
+    __gtype_name__ = 'CommentThread'
+    header = Gtk.Template.Child()
+    comments_container = Gtk.Template.Child()
+    header_comments_vbox = Gtk.Template.Child()
 
     def load_thread(self, story):
         self.header.set_story_details(story)

@@ -3,5 +3,6 @@
   <gresource prefix="/hn">
   <file>ui/NewsList.ui</file>
   <file>ui/ThreadHeader.ui</file>
+  <file>ui/CommentThread.ui</file>
   </gresource>
 </gresources>
