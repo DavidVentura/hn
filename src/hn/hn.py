@@ -136,39 +136,21 @@ class NewsList(Gtk.Grid):
             widget = NewsItem(i)
             self.vbox.pack_start(widget, 0, 0, 0)
 
+@Gtk.Template(resource_path='/hn/ui/ThreadHeader.ui')
 class ThreadHeader(Gtk.Grid):
+    __gtype_name__ = 'ThreadHeader'
+
+    title = Gtk.Template.Child()
+    article_icon = Gtk.Template.Child()
+    article_event = Gtk.Template.Child()
+    back_event = Gtk.Template.Child()
+
     def __init__(self, *args, **kwds):
         super().__init__(*args, **kwds)
-        self.set_vexpand(False)
-        self.get_style_context().add_class('thread-header')
-
-        self.title = Gtk.Label(label='...')
-        self.title.set_hexpand(True)
-        self.title.set_line_wrap(True)
+        self.article_event.connect('button-release-event', self.article_click)
+        self.back_event.connect('button-release-event', self.back_click)
+        self.article_icon.set_from_pixbuf(load_icon_to_pixbuf('open-article.svg', 24))
         self.title.set_xalign(0)
-        self.title.get_style_context().add_class('thread-title')
-
-        article_icon = Gtk.Image.new_from_pixbuf(load_icon_to_pixbuf('open-article.svg', 24))
-        article_icon.set_halign(Gtk.Align.END)
-        article_icon.get_style_context().add_class('thread-article')
-
-        article_event = Gtk.EventBox()
-        article_event.add(article_icon)
-        article_event.connect('button-release-event', self.article_click)
-
-        back_icon = Gtk.Image.new_from_icon_name(icon_name='go-previous', size=Gtk.IconSize.BUTTON)
-        back_icon.set_halign(Gtk.Align.START)
-        back_icon.get_style_context().add_class('thread-back')
-
-        back_event = Gtk.EventBox()
-        back_event.add(back_icon)
-        back_event.connect('button-release-event', self.back_click)
-
-        self.attach(back_event, 0, 0, 1, 1)
-        self.attach(article_event, 5, 0, 1, 1)
-        self.attach(self.title, 0, 1, 6, 1)
-
-        self.show_all()
 
     def article_click(self, box, event):
         window = self.get_toplevel()
