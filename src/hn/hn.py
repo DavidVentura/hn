@@ -150,7 +150,6 @@ class ThreadHeader(Gtk.Grid):
         self.article_event.connect('button-release-event', self.article_click)
         self.back_event.connect('button-release-event', self.back_click)
         self.article_icon.set_from_pixbuf(load_icon_to_pixbuf('open-article.svg', 24))
-        self.title.set_xalign(0)
 
     def article_click(self, box, event):
         window = self.get_toplevel()
