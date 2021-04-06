@@ -16,7 +16,6 @@ from gi.repository import Gtk, GLib, Gdk, WebKit2, GdkPixbuf, Gio, Handy
 from hn.api import top_stories, get_comment, get_story, Comment, Story
 q = queue.Queue()
 
-SRC_DIR = Path(__file__).parent
 WEBEXT_DIR = '/home/david/git/webkit-webextension'
 Handy.init()  # Must call this otherwise the Template() calls don't know how to resolve any Hdy* widgets
 
