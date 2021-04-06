@@ -8,5 +8,6 @@
   <file>ui/CommentThread.ui</file>
   <file>ui/CommentItem.ui</file>
   <file>ui/WebsiteView.ui</file>
+  <file>css/style.css</file>
   </gresource>
 </gresources>

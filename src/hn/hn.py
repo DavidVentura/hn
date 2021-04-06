@@ -16,7 +16,6 @@ from api import top_stories, get_comment, get_story, Comment, Story
 q = queue.Queue()
 
 SRC_DIR = Path(__file__).parent
-STYLE_FILE = Path(__file__).parent / 'css' / 'style.css'
 ICONS_DIR = Path(__file__).parent / 'icons'
 RESOURCES_FILE = Path(__file__).parent / 'resources'
 WEBEXT_DIR = '/home/david/git/webkit-webextension'
@@ -51,7 +50,7 @@ class AppWindow(Handy.ApplicationWindow):
         context = Gtk.StyleContext()
         screen = Gdk.Screen.get_default()
 
-        css_provider.load_from_path(str(STYLE_FILE))
+        css_provider.load_from_resource('/hn/css/style.css')
         context.add_provider_for_screen(screen, css_provider,
                                         Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
