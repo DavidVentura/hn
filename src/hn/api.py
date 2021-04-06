@@ -7,7 +7,7 @@ import requests
 from typing import List
 from dataclasses import dataclass
 
-from pango import html_to_pango
+from hn.pango import html_to_pango
 
 session = requests.Session()
 

@@ -12,7 +12,7 @@ gi.require_version("Gtk", "3.0")
 gi.require_version("WebKit2", "4.0")
 from gi.repository import Gtk, GLib, Gdk, WebKit2, GdkPixbuf, Gio, Handy
 
-from api import top_stories, get_comment, get_story, Comment, Story
+from hn.api import top_stories, get_comment, get_story, Comment, Story
 q = queue.Queue()
 
 SRC_DIR = Path(__file__).parent

@@ -14,7 +14,7 @@
 
 # Todo
 
-* Proper python packaging
+* ?
 
 # Ideas
 
