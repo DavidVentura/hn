@@ -78,9 +78,9 @@ def _to_relative_time(tstamp):
     if delta < 24:
         return f'{int(delta)}h ago'
     delta /= 24
-    if delta < 360:
+    if delta < 365:
         return f'{int(delta)}d ago'
-    delta /= 360
+    delta /= 365
     return f'{int(delta)}y ago'
 
 def get_comment(_id) -> Comment:
