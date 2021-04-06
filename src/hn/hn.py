@@ -16,14 +16,13 @@ from api import top_stories, get_comment, get_story, Comment, Story
 q = queue.Queue()
 
 SRC_DIR = Path(__file__).parent
-ICONS_DIR = Path(__file__).parent / 'icons'
 RESOURCES_FILE = Path(__file__).parent / 'resources'
 WEBEXT_DIR = '/home/david/git/webkit-webextension'
 Handy.init()  # Must call this otherwise the Template() calls don't know how to resolve any Hdy* widgets
 
 def load_icon_to_pixbuf(name, width):
-    path = str(ICONS_DIR / name)
-    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(path, width, -1, True)
+    path = f'/hn/icons/{name}'
+    pixbuf = GdkPixbuf.Pixbuf.new_from_resource_at_scale(path, width, -1, True)
     return pixbuf
 
 resource = Gio.Resource.load(str(RESOURCES_FILE))

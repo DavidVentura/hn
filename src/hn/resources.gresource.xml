@@ -9,5 +9,6 @@
   <file>ui/CommentItem.ui</file>
   <file>ui/WebsiteView.ui</file>
   <file>css/style.css</file>
+  <file>icons/open-article.svg</file>
   </gresource>
 </gresources>

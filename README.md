@@ -15,7 +15,6 @@
 # Todo
 
 * Proper python packaging
-* Figure out how to add css/icons to the resources file
 
 # Ideas
 
