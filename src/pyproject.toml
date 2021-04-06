@@ -3,6 +3,7 @@ name = "hn"
 version = "0.1.0"
 description = ""
 authors = ["david <davidventura27@gmail.com>"]
+include = ["resources"]
 
 [tool.poetry.scripts]
 hn = "hn.hn:main"
