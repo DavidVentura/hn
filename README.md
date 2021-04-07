@@ -14,7 +14,8 @@
 
 # Todo
 
-* ?
+* Settings
+  * but for what? log in? external browser?
 
 # Ideas
 
