@@ -29,3 +29,5 @@
 * [BS4](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
 * [Gnome icon naming spec](https://developer.gnome.org/icon-naming-spec/)
 * [GtkInspector - Gtk debugger](https://wiki.gnome.org/Projects/GTK/Inspector)
+* [Material icons](https://fonts.google.com/icons?selected=Material+Icons&icon.query=plus)
+* [Material guidelines](https://material.io/components/buttons-floating-action-button#behavior)

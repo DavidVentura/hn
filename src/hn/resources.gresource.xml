@@ -10,5 +10,6 @@
   <file>ui/WebsiteView.ui</file>
   <file>css/style.css</file>
   <file>icons/open-article.svg</file>
+  <file>icons/reply.png</file>
   </gresource>
 </gresources>
