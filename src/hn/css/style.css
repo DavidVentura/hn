@@ -93,3 +93,15 @@
 .rotate {
 	-gtk-icon-transform: rotate(0.5turn);
 }
+
+.thread-reply-action label {
+	color: white;
+}
+.thread-reply-action {
+	margin-bottom: 10px;
+	margin-right: 10px;
+	border-radius: 50px;
+	background-color: #ff5252;
+	box-shadow: 0px 4px 4px rgba(0,0,0, 0.3);
+	padding: 18px;
+}
