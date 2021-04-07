@@ -70,11 +70,13 @@
 	color: #999;
 }
 
+.thread-complete {
+	background-color: white;
+}
 .thread-comments {
 	padding-left: 5px;
 	margin-left: 3px;
 	margin-right: 3px;
-	background-color: white;
 }
 .thread-header {
 	background-color: #ffb64d;
