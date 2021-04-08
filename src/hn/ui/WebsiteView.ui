@@ -8,10 +8,9 @@
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
     <child>
-      <object class="GtkEventBox" id="back_event">
+      <object class="GtkButton" id="back_event">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <signal name="button-release-event" handler="back_click" swapped="no"/>
         <child>
           <object class="GtkLabel" id="back">
             <property name="visible">True</property>
@@ -25,6 +24,9 @@
         <property name="top_attach">0</property>
       </packing>
     </child>
+    <style>
+      <class name="comment-item"/>
+    </style>
     <child>
       <object class="GtkScrolledWindow">
         <property name="visible">True</property>

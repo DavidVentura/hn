@@ -27,7 +27,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkEventBox" id="back_event">
+      <object class="GtkButton" id="back_event">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
@@ -36,12 +36,14 @@
             <property name="can_focus">False</property>
             <property name="halign">start</property>
             <property name="stock">gtk-go-back</property>
-            <signal name="button-release-event" handler="back_click" swapped="no"/>
             <style>
               <class name="thread-back"/>
             </style>
           </object>
         </child>
+        <style>
+          <class name="flat"/>
+        </style>
       </object>
       <packing>
         <property name="left_attach">0</property>
@@ -49,10 +51,9 @@
       </packing>
     </child>
     <child>
-      <object class="GtkEventBox" id="article_event">
+      <object class="GtkButton" id="article_event">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <signal name="button-release-event" handler="article_click" swapped="no"/>
         <child>
           <object class="GtkImage" id="article_icon">
             <property name="visible">True</property>
@@ -60,12 +61,15 @@
             <property name="halign">end</property>
             <property name="stock">gtk-file</property>
             <property name="icon_size">2</property>
-            <signal name="button-release-event" handler="article_click" swapped="no"/>
             <style>
               <class name="thread-article"/>
             </style>
           </object>
         </child>
+        <style>
+          <class name="comment-item"/>
+          <class name="flat"/>
+        </style>
       </object>
       <packing>
         <property name="left_attach">5</property>

@@ -61,10 +61,16 @@
           </object>
         </child>
         <child type="overlay">
-          <object class="GtkImage" id="thread_reply">
-<property name="resource">/hn/icons/reply.png</property>
+          <object class="GtkButton" id="thread_reply">
             <property name="valign">end</property>
             <property name="halign">end</property>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="resource">/hn/icons/reply.png</property>
+              </object>
+            </child>
             <style>
               <class name="thread-reply-action"/>
             </style>

@@ -79,7 +79,7 @@ class WebsiteView(Gtk.Grid):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.back_event.connect('button-release-event', self.back_click)
+        self.back_event.connect('clicked', self.back_click)
         # https://stackoverflow.com/questions/60126579/gtk-builder-error-quark-invalid-object-type-webkitwebview
         # Can't have the WevView in ui file without hacks, doing it programatically is clearer
         ctx = WebKit2.WebContext.get_default()
@@ -92,7 +92,7 @@ class WebsiteView(Gtk.Grid):
     def load_uri(self, uri):
         self.www.load_uri(uri)
 
-    def back_click(self, box, event):
+    def back_click(self, event):
         self.www.stop_loading()
         window = self.get_toplevel()
         window.pop_website()
@@ -136,15 +136,15 @@ class ThreadHeader(Gtk.Grid):
 
     def __init__(self, *args, **kwds):
         super().__init__(*args, **kwds)
-        self.article_event.connect('button-release-event', self.article_click)
-        self.back_event.connect('button-release-event', self.back_click)
+        self.article_event.connect('clicked', self.article_click)
+        self.back_event.connect('clicked', self.back_click)
         self.article_icon.set_from_pixbuf(load_icon_to_pixbuf('open-article.svg', 24))
 
-    def article_click(self, box, event):
+    def article_click(self, event):
         window = self.get_toplevel()
         window.set_website(self.article_url)
 
-    def back_click(self, box, event):
+    def back_click(self, event):
         window = self.get_toplevel()
         window.set_news()
 
@@ -188,18 +188,18 @@ class NewsItem(Gtk.Grid):
         super().__init__(*args, **kwds)
         self.article_url = None
         self.thread_id = _item_id
-        self.title_event.connect('button-release-event', self.title_click)
-        self.comments_event.connect('button-release-event', self.comments_click)
+        self.title_event.connect('clicked', self.title_click)
+        self.comments_event.connect('clicked', self.comments_click)
         self.on_show()
 
     def on_show(self):
         q.put((self._set_content, self.thread_id))
 
-    def comments_click(self, eventbox, event):
+    def comments_click(self, event):
         window = self.get_toplevel()
         window.set_thread(self.story)
 
-    def title_click(self, eventbox, event):
+    def title_click(self, event):
         window = self.get_toplevel()
         window.set_website(self.article_url)
 
@@ -236,7 +236,7 @@ class CommentItem(Gtk.Box):
         self.nesting = nesting
         self.get_style_context().add_class(f'comment-item-nested-{nesting}')
         self.comment.connect('activate-link', self.activate_link)
-        self.revealer_event.connect('button-release-event', self.reveal_replies_click)
+        self.revealer_event.connect('clicked', self.reveal_replies_click)
 
         self.on_show()
 
@@ -271,7 +271,7 @@ class CommentItem(Gtk.Box):
             wid.set_visible(True)
             self.replies.pack_start(wid, 0, 0, 0)
 
-    def reveal_replies_click(self, box, event):
+    def reveal_replies_click(self, event):
         self.replies_visible = not self.replies_visible
         self.replies_container.set_reveal_child(self.replies_visible)
         if self.replies_visible:

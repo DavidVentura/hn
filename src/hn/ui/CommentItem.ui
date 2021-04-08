@@ -42,20 +42,21 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEventBox" id="revealer_event">
-            <property name="can_focus">False</property>
+          <object class="GtkButton" id="revealer_event">
             <child>
               <object class="GtkImage" id="revealer_img">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-go-up</property>
                 <property name="icon_size">2</property>
-                <signal name="button-release-event" handler="reveal_replies_click" swapped="no"/>
                 <style>
                   <class name="comment-item-toggle"/>
                 </style>
               </object>
             </child>
+            <style>
+              <class name="flat"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -83,20 +84,6 @@
             <property name="can_focus">False</property>
             <property name="vexpand">True</property>
             <property name="orientation">vertical</property>
-            <child>
-              <object class="GtkEventBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
             <style>
               <class name="comment-replies"/>
             </style>
