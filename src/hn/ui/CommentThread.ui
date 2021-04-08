@@ -73,6 +73,7 @@
             </child>
             <style>
               <class name="thread-reply-action"/>
+              <class name="round"/>
             </style>
           </object>
         </child>

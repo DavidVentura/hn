@@ -102,7 +102,6 @@
 .thread-reply-action {
 	margin-bottom: 10px;
 	margin-right: 10px;
-	border-radius: 50px;
 	background-color: #ff5252;
 	box-shadow: 0px 4px 4px rgba(0,0,0, 0.3);
 	padding: 12px;
@@ -111,4 +110,14 @@
 .flat {
 	border: 0px;
 	padding: 0px;
+    	background-color: transparent;
+}
+.flat:hover, .flat:checked{
+    background-color: transparent;
+}
+.flat:active {
+    background-color: rgba(0,0,0,0.2);
+}
+.round {
+	border-radius: 50px;
 }
