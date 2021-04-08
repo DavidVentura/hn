@@ -9,6 +9,7 @@
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkButton" id="back_event">
+        <signal name="clicked" handler="back_click" swapped="no"/>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>

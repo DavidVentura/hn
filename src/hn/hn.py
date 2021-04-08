@@ -78,7 +78,6 @@ class WebsiteView(Gtk.Box):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.back_event.connect('clicked', self.back_click)
         # https://stackoverflow.com/questions/60126579/gtk-builder-error-quark-invalid-object-type-webkitwebview
         # Can't have the WevView in ui file without hacks, doing it programatically is clearer
         ctx = WebKit2.WebContext.get_default()
@@ -91,6 +90,7 @@ class WebsiteView(Gtk.Box):
     def load_uri(self, uri):
         self.www.load_uri(uri)
 
+    @Gtk.Template.Callback()
     def back_click(self, event):
         self.www.stop_loading()
         window = self.get_toplevel()
@@ -103,10 +103,7 @@ class NewsList(Gtk.Bin):
     scrolled_window = Gtk.Template.Child()
     vbox = Gtk.Template.Child()
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.scrolled_window.connect('edge-overshot', self.edge_overshot)
-
+    @Gtk.Template.Callback()
     def edge_overshot(self, pos, user_data):
         if user_data != Gtk.PositionType.TOP:
             return
@@ -135,14 +132,14 @@ class ThreadHeader(Gtk.Grid):
 
     def __init__(self, *args, **kwds):
         super().__init__(*args, **kwds)
-        self.article_event.connect('clicked', self.article_click)
-        self.back_event.connect('clicked', self.back_click)
         self.article_icon.set_from_pixbuf(load_icon_to_pixbuf('open-article.svg', 24))
 
+    @Gtk.Template.Callback()
     def article_click(self, event):
         window = self.get_toplevel()
         window.set_website(self.article_url)
 
+    @Gtk.Template.Callback()
     def back_click(self, event):
         window = self.get_toplevel()
         window.set_news()
@@ -174,6 +171,9 @@ class CommentThread(Gtk.ScrolledWindow):
             widget1.set_visible(True)
             self.comments_container.pack_start(widget1, 0, 0, 0)  ## fill and expand
 
+def comments_click(event):
+    print('asd')
+
 @Gtk.Template(resource_path='/hn/ui/NewsItem.ui')
 class NewsItem(Gtk.Grid):
     __gtype_name__ = 'NewsItem'
@@ -187,17 +187,17 @@ class NewsItem(Gtk.Grid):
         super().__init__(*args, **kwds)
         self.article_url = None
         self.thread_id = _item_id
-        self.title_event.connect('clicked', self.title_click)
-        self.comments_btn.connect('clicked', self.comments_click)
         self.on_show()
 
     def on_show(self):
         q.put((self._set_content, self.thread_id))
 
+    @Gtk.Template.Callback()
     def comments_click(self, event):
         window = self.get_toplevel()
         window.set_thread(self.story)
 
+    @Gtk.Template.Callback()
     def title_click(self, event):
         window = self.get_toplevel()
         window.set_website(self.article_url)
@@ -234,8 +234,6 @@ class CommentItem(Gtk.Box):
 
         self.nesting = nesting
         self.get_style_context().add_class(f'comment-item-nested-{nesting}')
-        self.comment.connect('activate-link', self.activate_link)
-        self.revealer_event.connect('clicked', self.reveal_replies_click)
 
         self.on_show()
 
@@ -270,6 +268,7 @@ class CommentItem(Gtk.Box):
             wid.set_visible(True)
             self.replies.pack_start(wid, 0, 0, 0)
 
+    @Gtk.Template.Callback()
     def reveal_replies_click(self, event):
         self.replies_visible = not self.replies_visible
         self.replies_container.set_reveal_child(self.replies_visible)
@@ -278,6 +277,7 @@ class CommentItem(Gtk.Box):
         else:
             self.revealer_img.get_style_context().add_class('rotate')
 
+    @Gtk.Template.Callback()
     def activate_link(self, label, link):
         window = self.get_toplevel()
         window.set_website(link)

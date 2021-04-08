@@ -37,6 +37,7 @@
         </child>
         <child>
           <object class="GtkButton" id="revealer_event">
+            <signal name="clicked" handler="reveal_replies_click" swapped="no"/>
             <child>
               <object class="GtkImage" id="revealer_img">
                 <property name="visible">True</property>
