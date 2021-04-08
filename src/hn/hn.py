@@ -180,7 +180,7 @@ class NewsItem(Gtk.Grid):
     title = Gtk.Template.Child()
     url = Gtk.Template.Child()
     comments = Gtk.Template.Child()
-    comments_event = Gtk.Template.Child()
+    comments_btn = Gtk.Template.Child()
     title_event = Gtk.Template.Child()
 
     def __init__(self, _item_id, *args, **kwds):
@@ -188,7 +188,7 @@ class NewsItem(Gtk.Grid):
         self.article_url = None
         self.thread_id = _item_id
         self.title_event.connect('clicked', self.title_click)
-        self.comments_event.connect('clicked', self.comments_click)
+        self.comments_btn.connect('clicked', self.comments_click)
         self.on_show()
 
     def on_show(self):
