@@ -1,7 +1,7 @@
 .PHONY: run test
 
 run: src/hn/resources
-	hn
+	venv/bin/hn
 
 test:
 	poetry run pytest

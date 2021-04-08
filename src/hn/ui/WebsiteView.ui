@@ -19,10 +19,6 @@
           </object>
         </child>
       </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">0</property>
-      </packing>
     </child>
   </template>
 </interface>

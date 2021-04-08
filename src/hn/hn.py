@@ -98,7 +98,7 @@ class WebsiteView(Gtk.Box):
 
 
 @Gtk.Template(resource_path='/hn/ui/NewsList.ui')
-class NewsList(Gtk.Grid):
+class NewsList(Gtk.Bin):
     __gtype_name__ = 'NewsList'
     scrolled_window = Gtk.Template.Child()
     vbox = Gtk.Template.Child()
