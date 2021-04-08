@@ -72,10 +72,9 @@ class AppWindow(Handy.ApplicationWindow):
 
 
 @Gtk.Template(resource_path='/hn/ui/WebsiteView.ui')
-class WebsiteView(Gtk.Grid):
+class WebsiteView(Gtk.Box):
     __gtype_name__ = 'WebsiteView'
     back_event = Gtk.Template.Child()
-    viewport = Gtk.Template.Child()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -87,7 +86,7 @@ class WebsiteView(Gtk.Grid):
         self.www = WebKit2.WebView.new_with_context(ctx)
         self.www.set_hexpand(True)
         self.www.set_vexpand(True)
-        self.viewport.add(self.www)
+        self.add(self.www)
 
     def load_uri(self, uri):
         self.www.load_uri(uri)
