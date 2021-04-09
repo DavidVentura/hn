@@ -3,10 +3,11 @@ import time
 import queue
 import pkg_resources
 from pathlib import Path
+from threading import Thread
 
 import gi
 
-from threading import Thread
+from readability import Document
 
 gi.require_version("Handy", "1")
 gi.require_version("Gtk", "3.0")
@@ -28,6 +29,8 @@ data = pkg_resources.resource_stream('hn', 'resources')
 glib_data = GLib.Bytes.new(data.read())
 resource = Gio.Resource.new_from_data(glib_data)
 resource._register()
+_rs = Gio.resources_lookup_data('/hn/css/reader_mode.css', Gio.ResourceLookupFlags.NONE)
+READER_CSS = _rs.get_data().decode().replace('\n', '')
 
 @Gtk.Template(resource_path='/hn/ui/MainWindow.ui')
 class AppWindow(Handy.ApplicationWindow):
@@ -74,7 +77,7 @@ class AppWindow(Handy.ApplicationWindow):
 @Gtk.Template(resource_path='/hn/ui/WebsiteView.ui')
 class WebsiteView(Gtk.Box):
     __gtype_name__ = 'WebsiteView'
-    back_event = Gtk.Template.Child()
+    readable_toggle = Gtk.Template.Child()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -83,12 +86,48 @@ class WebsiteView(Gtk.Box):
         ctx = WebKit2.WebContext.get_default()
         ctx.set_web_extensions_directory(WEBEXT_DIR)
         self.www = WebKit2.WebView.new_with_context(ctx)
+        self.www.connect('load-changed', self.load_changed)
         self.www.set_hexpand(True)
         self.www.set_vexpand(True)
         self.add(self.www)
 
+    def load_changed(self, webview, state):
+        finished = state == WebKit2.LoadEvent.FINISHED
+        if not finished:
+            return
+        self.www.run_javascript_from_gresource('/hn/js/Readability.js', None, self._loaded_readability, None)
+
     def load_uri(self, uri):
+        self.readable_toggle.hide()
         self.www.load_uri(uri)
+
+    @Gtk.Template.Callback()
+    def readability_click(self, event):
+        self.www.stop_loading()
+        js = f'''
+          // clean head
+          let h = document.head;
+          for (let c of h.childNodes) h.removeChild(c);
+          // add previously-parsed article
+          let article = new Readability(document).parse();
+          document.querySelector('body').innerHTML = article.content;
+          // add our style
+          var style = document.createElement("style");
+          style.innerHTML = '{READER_CSS}';
+          h.appendChild(style);
+        '''
+        self.www.run_javascript(js, None, None, None)
+
+    def _loaded_readability(self, resource, result, user_data):
+        result = resource.run_javascript_from_gresource_finish(result)
+        js = 'isProbablyReaderable(document);'
+        self.www.run_javascript(js, None, self.on_readerable_result, None)
+
+    def on_readerable_result(self, webview, result, user_data):
+        result = self.www.run_javascript_finish(result)
+        if result.get_js_value().to_boolean():
+            print('making visible', flush=True)
+            self.readable_toggle.set_visible(True)
 
     @Gtk.Template.Callback()
     def back_click(self, event):
@@ -128,7 +167,6 @@ class ThreadHeader(Gtk.Grid):
     title = Gtk.Template.Child()
     article_icon = Gtk.Template.Child()
     article_event = Gtk.Template.Child()
-    back_event = Gtk.Template.Child()
 
     def __init__(self, *args, **kwds):
         super().__init__(*args, **kwds)

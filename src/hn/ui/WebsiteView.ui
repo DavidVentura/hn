@@ -8,12 +8,27 @@
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
     <child>
-      <object class="GtkButton" id="back_event">
+      <object class="GtkButton" id="readable_toggle">
+        <signal name="clicked" handler="readability_click" swapped="no"/>
+        <property name="no-show-all">True</property>
+        <property name="visible">False</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Reader mode</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkButton">
         <signal name="clicked" handler="back_click" swapped="no"/>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
-          <object class="GtkLabel" id="back">
+          <object class="GtkLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Go back</property>
