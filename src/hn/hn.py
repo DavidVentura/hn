@@ -165,12 +165,6 @@ class ThreadHeader(Gtk.Grid):
     __gtype_name__ = 'ThreadHeader'
 
     title = Gtk.Template.Child()
-    article_icon = Gtk.Template.Child()
-    article_event = Gtk.Template.Child()
-
-    def __init__(self, *args, **kwds):
-        super().__init__(*args, **kwds)
-        self.article_icon.set_from_pixbuf(load_icon_to_pixbuf('open-article.svg', 24))
 
     @Gtk.Template.Callback()
     def article_click(self, event):

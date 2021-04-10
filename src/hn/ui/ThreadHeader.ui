@@ -63,12 +63,11 @@
         <property name="xalign">1</property>
         <property name="halign">end</property>
         <child>
-          <object class="GtkImage" id="article_icon">
+          <object class="GtkImage">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">end</property>
-            <property name="stock">gtk-file</property>
-            <property name="icon_size">2</property>
+            <property name="resource">/hn/icons/open-article.svg</property>
             <style>
               <class name="thread-article"/>
             </style>
