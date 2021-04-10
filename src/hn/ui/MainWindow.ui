@@ -8,22 +8,46 @@
     <property name="default_width">360</property>
     <property name="default_height">720</property>
     <child>
-      <object class="HdyDeck" id="stack">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="can_swipe_back">True</property>
-        <property name="visible_child">news_list</property>
-        <property name="transition_type">slide</property>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
         <child>
-          <object class="NewsList" id="news_list"></object>
+          <object class="HdyDeck" id="header_stack">
+            <property name="visible">True</property>
+            <property name="transition_type">slide</property>
+            <property name="hexpand">True</property>
+            <child>
+              <object class="NewsHeader"></object>
+            </child>
+            <child>
+              <object class="ThreadHeader"></object>
+            </child>
+          </object>
         </child>
         <child>
-          <object class="CommentThread" id="ct"></object>
-        </child>
-        <child>
-          <object class="WebsiteView" id="www"></object>
+          <object class="HdyDeck" id="stack">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="can_swipe_back">True</property>
+            <property name="visible_child">news_list</property>
+            <property name="transition_type">slide</property>
+            <child>
+              <object class="NewsList" id="news_list"></object>
+            </child>
+            <child>
+              <object class="CommentThread" id="ct"></object>
+            </child>
+            <child>
+              <object class="WebsiteView" id="www"></object>
+            </child>
+          </object>
         </child>
       </object>
     </child>
   </template>
+  <object class="HdySwipeGroup">
+    <swipeables>
+      <swipeable name="header_stack" />
+      <swipeable name="stack" />
+    </swipeables>
+  </object>
 </interface>

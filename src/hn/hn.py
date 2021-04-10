@@ -74,11 +74,33 @@ class AppWindow(Handy.ApplicationWindow):
         self.stack.set_visible_child(self.old_child)
 
 
+@Gtk.Template(resource_path='/hn/ui/WebsiteHeader.ui')
+class WebsiteHeader(Handy.HeaderBar):
+    __gtype_name__ = 'WebsiteHeader'
+    readable_toggle = Gtk.Template.Child()
+    page_title = Gtk.Template.Child()
+
+    @Gtk.Template.Callback()
+    def open_in_browser_click(self, event):
+        print('in browser')
+
+    @Gtk.Template.Callback()
+    def readability_click(self, event):
+        self.readable_toggle.hide()
+        # FIXME
+        # call www.convert_to_readable
+        return
+
+    @Gtk.Template.Callback()
+    def back_click(self, event):
+        # FIXME
+        # self.www.stop_loading()
+        window = self.get_toplevel()
+        window.pop_website()
+
 @Gtk.Template(resource_path='/hn/ui/WebsiteView.ui')
 class WebsiteView(Gtk.Box):
     __gtype_name__ = 'WebsiteView'
-    readable_toggle = Gtk.Template.Child()
-    page_title = Gtk.Template.Child()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -94,22 +116,32 @@ class WebsiteView(Gtk.Box):
 
     def load_changed(self, webview, state):
         if state == WebKit2.LoadEvent.STARTED:
-            self.readable_toggle.hide()
+            # self.readable_toggle.hide()
+            # FIXME
+            pass
         finished = state == WebKit2.LoadEvent.FINISHED
         if not finished:
             return
         self.www.run_javascript_from_gresource('/hn/js/Readability.js', None, self._loaded_readability, None)
 
     def load_uri(self, uri, title):
-        self.page_title.set_label(title)
+        # self.page_title.set_label(title)
+        # FIXME
         self.www.load_uri(uri)
 
-    @Gtk.Template.Callback()
-    def open_in_browser_click(self, event):
-        print('in browser')
+    def _loaded_readability(self, resource, result, user_data):
+        result = resource.run_javascript_from_gresource_finish(result)
+        js = 'isProbablyReaderable(document);'
+        self.www.run_javascript(js, None, self.on_readerable_result, None)
 
-    @Gtk.Template.Callback()
-    def readability_click(self, event):
+    def on_readerable_result(self, webview, result, user_data):
+        result = self.www.run_javascript_finish(result)
+        if result.get_js_value().to_boolean():
+            print('making visible', flush=True)
+            # self.readable_toggle.set_visible(True)
+            # FIXME
+
+    def convert_to_readable(self):
         self.www.stop_loading()
         js = f'''
           let h = document.head;
@@ -124,37 +156,12 @@ class WebsiteView(Gtk.Box):
           document.head.appendChild(style);
         '''
         self.www.run_javascript(js, None, None, None)
-        self.readable_toggle.hide()
-
-    def _loaded_readability(self, resource, result, user_data):
-        result = resource.run_javascript_from_gresource_finish(result)
-        js = 'isProbablyReaderable(document);'
-        self.www.run_javascript(js, None, self.on_readerable_result, None)
-
-    def on_readerable_result(self, webview, result, user_data):
-        result = self.www.run_javascript_finish(result)
-        if result.get_js_value().to_boolean():
-            print('making visible', flush=True)
-            self.readable_toggle.set_visible(True)
-
-    @Gtk.Template.Callback()
-    def back_click(self, event):
-        self.www.stop_loading()
-        window = self.get_toplevel()
-        window.pop_website()
 
 
 @Gtk.Template(resource_path='/hn/ui/NewsList.ui')
 class NewsList(Gtk.Bin):
     __gtype_name__ = 'NewsList'
-    scrolled_window = Gtk.Template.Child()
     vbox = Gtk.Template.Child()
-
-    @Gtk.Template.Callback()
-    def edge_overshot(self, pos, user_data):
-        if user_data != Gtk.PositionType.TOP:
-            return
-        BG_TASKS.submit(self.refresh)
 
     def refresh(self):
         stories = top_stories()
@@ -168,8 +175,17 @@ class NewsList(Gtk.Bin):
             widget = NewsItem(i)
             self.vbox.pack_start(widget, 0, 0, 0)
 
+@Gtk.Template(resource_path='/hn/ui/NewsHeader.ui')
+class NewsHeader(Handy.HeaderBar):
+    __gtype_name__ = 'NewsHeader'
+
+    @Gtk.Template.Callback()
+    def on_refresh(self, event):
+        #BG_TASKS.submit(self.refresh)
+        print("FIXME: Refresh via header?")
+
 @Gtk.Template(resource_path='/hn/ui/ThreadHeader.ui')
-class ThreadHeader(Gtk.Grid):
+class ThreadHeader(Handy.HeaderBar):
     __gtype_name__ = 'ThreadHeader'
 
     title = Gtk.Template.Child()
@@ -192,12 +208,13 @@ class ThreadHeader(Gtk.Grid):
 @Gtk.Template(resource_path='/hn/ui/CommentThread.ui')
 class CommentThread(Gtk.ScrolledWindow):
     __gtype_name__ = 'CommentThread'
-    header = Gtk.Template.Child()
+    #header = Gtk.Template.Child()
     comments_container = Gtk.Template.Child()
     header_comments_vbox = Gtk.Template.Child()
 
     def load_thread(self, story):
-        self.header.set_story_details(story)
+        # FIXME set data on header
+        #self.header.set_story_details(story)
         BG_TASKS.submit(self._load_thread, story.story_id)
 
     def _load_thread(self, thread_id):
