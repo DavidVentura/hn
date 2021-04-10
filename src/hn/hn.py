@@ -1,9 +1,9 @@
 #!/usr/bin/env python3.7
 import time
-import queue
 import pkg_resources
+
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-from threading import Thread
 
 import gi
 
@@ -15,8 +15,8 @@ gi.require_version("WebKit2", "4.0")
 from gi.repository import Gtk, GLib, Gdk, WebKit2, GdkPixbuf, Gio, Handy
 
 from hn.api import top_stories, get_comment, get_story, Comment, Story
-q = queue.Queue()
 
+BG_TASKS = ThreadPoolExecutor(max_workers=4)
 WEBEXT_DIR = '/home/david/git/webkit-webextension'
 Handy.init()  # Must call this otherwise the Template() calls don't know how to resolve any Hdy* widgets
 
@@ -154,9 +154,9 @@ class NewsList(Gtk.Bin):
     def edge_overshot(self, pos, user_data):
         if user_data != Gtk.PositionType.TOP:
             return
-        q.put((self.refresh, None))
+        BG_TASKS.submit(self.refresh)
 
-    def refresh(self, _):
+    def refresh(self):
         stories = top_stories()
         GLib.idle_add(self.set_items, stories[:50])  # FIXME
 
@@ -198,7 +198,7 @@ class CommentThread(Gtk.ScrolledWindow):
 
     def load_thread(self, story):
         self.header.set_story_details(story)
-        q.put((self._load_thread, story.story_id))
+        BG_TASKS.submit(self._load_thread, story.story_id)
 
     def _load_thread(self, thread_id):
         for child in self.comments_container.get_children():
@@ -231,7 +231,7 @@ class NewsItem(Gtk.Grid):
         self.on_show()
 
     def on_show(self):
-        q.put((self._set_content, self.thread_id))
+        BG_TASKS.submit(self._set_content, self.thread_id)
 
     @Gtk.Template.Callback()
     def comments_click(self, event):
@@ -281,7 +281,7 @@ class CommentItem(Gtk.Box):
 
     def on_show(self):
         if not self.rendered:
-            q.put((self._set_content, self.comment_id))
+            BG_TASKS.submit(self._set_content, self.comment_id)
 
     def _set_content(self, _item_id):
         self.rendered = True
@@ -332,21 +332,10 @@ class Application(Gtk.Application):
     def do_activate(self):
         self.window = AppWindow(application=self, title="Main Window")
         self.window.present()
-        q.put((self.window.news_list.refresh, None))
-
-
-def background_fn():
-    while True:
-        fn, arg = q.get()
-        fn(arg)
-        time.sleep(0.01)
+        BG_TASKS.submit(self.window.news_list.refresh)
 
 
 def main():
-    t = Thread(target=background_fn)
-    t.daemon = True
-    t.start()
-
     app = Application()
     app.run()
 
