@@ -21,6 +21,9 @@
             <child>
               <object class="ThreadHeader"></object>
             </child>
+            <child>
+              <object class="WebsiteHeader"></object>
+            </child>
           </object>
         </child>
         <child>
