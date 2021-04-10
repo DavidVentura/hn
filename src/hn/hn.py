@@ -15,6 +15,7 @@ gi.require_version("WebKit2", "4.0")
 from gi.repository import Gtk, GLib, Gdk, WebKit2, GdkPixbuf, Gio, Handy
 
 from hn.api import top_stories, get_comment, get_story, Comment, Story
+from hn.bus import Bus
 
 BG_TASKS = ThreadPoolExecutor(max_workers=4)
 WEBEXT_DIR = '/home/david/git/webkit-webextension'
@@ -32,6 +33,7 @@ resource._register()
 _rs = Gio.resources_lookup_data('/hn/css/reader_mode.css', Gio.ResourceLookupFlags.NONE)
 READER_CSS = _rs.get_data().decode().replace('\n', '')
 
+
 @Gtk.Template(resource_path='/hn/ui/MainWindow.ui')
 class AppWindow(Handy.ApplicationWindow):
     __gtype_name__ = 'AppWindow'
@@ -48,6 +50,9 @@ class AppWindow(Handy.ApplicationWindow):
         self.set_default_size(360, 720)
         self.show_all()
 
+        Bus.on("open_thread", self.set_thread)
+        Bus.on("open_website", self.set_website)
+
     def setup_styles(self):
         css_provider = Gtk.CssProvider()
         context = Gtk.StyleContext()
@@ -59,7 +64,7 @@ class AppWindow(Handy.ApplicationWindow):
 
     def set_thread(self, story):
         self.stack.set_visible_child(self.ct)
-        self.ct.load_thread(story)
+        self.ct.async_load_thread(story)
     
     def set_news(self):
         self.stack.set_visible_child(self.news_list)
@@ -80,6 +85,12 @@ class WebsiteHeader(Handy.HeaderBar):
     readable_toggle = Gtk.Template.Child()
     page_title = Gtk.Template.Child()
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        Bus.on("open_website", lambda url, title: self.page_title.set_label(title))
+        Bus.on("trigger_website_loading", self.readable_toggle.hide)
+        Bus.on("website_can_be_readable", self.readable_toggle.show)
+
     @Gtk.Template.Callback()
     def open_in_browser_click(self, event):
         print('in browser')
@@ -87,14 +98,12 @@ class WebsiteHeader(Handy.HeaderBar):
     @Gtk.Template.Callback()
     def readability_click(self, event):
         self.readable_toggle.hide()
-        # FIXME
-        # call www.convert_to_readable
-        return
+        Bus.emit("trigger_readability")
 
     @Gtk.Template.Callback()
     def back_click(self, event):
+        Bus.emit("trigger_stop_website")
         # FIXME
-        # self.www.stop_loading()
         window = self.get_toplevel()
         window.pop_website()
 
@@ -114,20 +123,20 @@ class WebsiteView(Gtk.Box):
         self.www.set_vexpand(True)
         self.add(self.www)
 
+        Bus.on("trigger_readability", self.convert_to_readable)
+        Bus.on("open_website", self.load_uri)
+        Bus.on("trigger_stop_website", self.www.stop_loading)
+
     def load_changed(self, webview, state):
         if state == WebKit2.LoadEvent.STARTED:
-            # self.readable_toggle.hide()
-            # FIXME
-            pass
+            Bus.emit("trigger_website_loading")
         finished = state == WebKit2.LoadEvent.FINISHED
         if not finished:
             return
         self.www.run_javascript_from_gresource('/hn/js/Readability.js', None, self._loaded_readability, None)
 
-    def load_uri(self, uri, title):
-        # self.page_title.set_label(title)
-        # FIXME
-        self.www.load_uri(uri)
+    def load_uri(self, url, title):
+        self.www.load_uri(url)
 
     def _loaded_readability(self, resource, result, user_data):
         result = resource.run_javascript_from_gresource_finish(result)
@@ -137,9 +146,8 @@ class WebsiteView(Gtk.Box):
     def on_readerable_result(self, webview, result, user_data):
         result = self.www.run_javascript_finish(result)
         if result.get_js_value().to_boolean():
+            Bus.emit("website_can_be_readable")
             print('making visible', flush=True)
-            # self.readable_toggle.set_visible(True)
-            # FIXME
 
     def convert_to_readable(self):
         self.www.stop_loading()
@@ -163,9 +171,16 @@ class NewsList(Gtk.Bin):
     __gtype_name__ = 'NewsList'
     vbox = Gtk.Template.Child()
 
-    def refresh(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        Bus.on('refresh_news_list', self.async_refresh)
+
+    def _refresh(self):
         stories = top_stories()
         GLib.idle_add(self.set_items, stories[:50])  # FIXME
+
+    def async_refresh(self):
+        BG_TASKS.submit(self._refresh)
 
     def set_items(self, news_item):
         for child in self.vbox.get_children():
@@ -181,8 +196,7 @@ class NewsHeader(Handy.HeaderBar):
 
     @Gtk.Template.Callback()
     def on_refresh(self, event):
-        #BG_TASKS.submit(self.refresh)
-        print("FIXME: Refresh via header?")
+        Bus.emit("refresh_news_list")
 
 @Gtk.Template(resource_path='/hn/ui/ThreadHeader.ui')
 class ThreadHeader(Handy.HeaderBar):
@@ -190,13 +204,17 @@ class ThreadHeader(Handy.HeaderBar):
 
     title = Gtk.Template.Child()
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        Bus.on("open_thread", self.set_story_details)
+
     @Gtk.Template.Callback()
     def article_click(self, event):
-        window = self.get_toplevel()
-        window.set_website(self.article_url, self.article_title)
+        Bus.emit("open_website", url=self.article_url, title=self.article_title)
 
     @Gtk.Template.Callback()
     def back_click(self, event):
+        # FIXME
         window = self.get_toplevel()
         window.set_news()
 
@@ -212,9 +230,7 @@ class CommentThread(Gtk.ScrolledWindow):
     comments_container = Gtk.Template.Child()
     header_comments_vbox = Gtk.Template.Child()
 
-    def load_thread(self, story):
-        # FIXME set data on header
-        #self.header.set_story_details(story)
+    def async_load_thread(self, story):
         BG_TASKS.submit(self._load_thread, story.story_id)
 
     def _load_thread(self, thread_id):
@@ -252,13 +268,11 @@ class NewsItem(Gtk.Grid):
 
     @Gtk.Template.Callback()
     def comments_click(self, event):
-        window = self.get_toplevel()
-        window.set_thread(self.story)
+        Bus.emit("open_thread", story=self.story)
 
     @Gtk.Template.Callback()
     def title_click(self, event):
-        window = self.get_toplevel()
-        window.set_website(self.article_url, self.thread_title)
+        Bus.emit("open_website", url=self.article_url, title=self.thread_title)
 
     def _set_content(self, _item_id):
         story = get_story(_item_id)
@@ -337,8 +351,7 @@ class CommentItem(Gtk.Box):
 
     @Gtk.Template.Callback()
     def activate_link(self, label, link):
-        window = self.get_toplevel()
-        window.set_website(link)
+        Bus.emit("open_website", url=link, title="FIX TITLE")
         return True
 
 
@@ -349,7 +362,7 @@ class Application(Gtk.Application):
     def do_activate(self):
         self.window = AppWindow(application=self, title="Main Window")
         self.window.present()
-        BG_TASKS.submit(self.window.news_list.refresh)
+        Bus.emit("refresh_news_list")
 
 
 def main():
