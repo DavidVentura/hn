@@ -8,32 +8,94 @@
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
     <child>
-      <object class="GtkButton" id="readable_toggle">
-        <signal name="clicked" handler="readability_click" swapped="no"/>
-        <property name="no-show-all">True</property>
-        <property name="visible">False</property>
-        <property name="can_focus">False</property>
+      <object class="GtkBox">
+        <property name="orientation">horizontal</property>
+        <property name="hexpand">true</property>
         <child>
-          <object class="GtkLabel">
+          <object class="GtkButton">
+            <signal name="clicked" handler="back_click" swapped="no"/>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Reader mode</property>
+            <child>
+              <object class="GtkImage" id="back_icon">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="stock">gtk-go-back</property>
+                <style>
+                  <class name="thread-back"/>
+                </style>
+              </object>
+            </child>
+            <style>
+              <class name="flat"/>
+              <class name="round"/>
+            </style>
           </object>
         </child>
-      </object>
-    </child>
-    <child>
-      <object class="GtkButton">
-        <signal name="clicked" handler="back_click" swapped="no"/>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <child>
-          <object class="GtkLabel">
+          <object class="GtkLabel" id="page_title">
+            <property name="hexpand">true</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Go back</property>
+            <property name="halign">start</property>
+            <property name="ellipsize">end</property>
           </object>
         </child>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <property name="halign">end</property>
+            <child>
+              <object class="GtkButton" id="readable_toggle">
+                <signal name="clicked" handler="readability_click" swapped="no"/>
+                <property name="no-show-all">True</property>
+                <property name="visible">False</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="resource">/hn/icons/reader_mode.svg</property>
+                    <style>
+                      <class name="thread-article"/>
+                    </style>
+                  </object>
+                </child>
+                <style>
+                  <class name="flat"/>
+                  <class name="round"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <signal name="clicked" handler="open_in_browser_click" swapped="no"/>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="icon_size">2</property>
+                    <property name="resource">/hn/icons/open-article.svg</property>
+                    <style>
+                      <class name="thread-article"/>
+                    </style>
+                  </object>
+                </child>
+                <style>
+                  <class name="flat"/>
+                  <class name="round"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <style>
+          <class name="www-header"/>
+        </style>
       </object>
     </child>
   </template>

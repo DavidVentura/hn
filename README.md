@@ -6,11 +6,13 @@
 - Works in read-only fashion
   - News list can only reload by over-shooting the scroll, but there's no visual indicator
 - Ad blocker in built-in browser via [shitty webextension](https://github.com/DavidVentura/webextension-adblocker)
+- Reader mode via [mozilla/readability](https://github.com/mozilla/readability)
 
 # Screenshots
 
 ![](https://github.com/davidventura/hn/blob/master/screenshots/frontpage.png?raw=true)
 ![](https://github.com/davidventura/hn/blob/master/screenshots/comments.png?raw=true)
+![](https://github.com/davidventura/hn/blob/master/screenshots/embedded-browser.png?raw=true)
 
 # Todo
 

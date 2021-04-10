@@ -64,8 +64,8 @@ class AppWindow(Handy.ApplicationWindow):
     def set_news(self):
         self.stack.set_visible_child(self.news_list)
 
-    def set_website(self, url):
-        self.www.load_uri(url)
+    def set_website(self, url, title):
+        self.www.load_uri(url, title)
         self.old_child = self.stack.get_visible_child()
         self.stack.set_visible_child(self.www)
 
@@ -78,6 +78,7 @@ class AppWindow(Handy.ApplicationWindow):
 class WebsiteView(Gtk.Box):
     __gtype_name__ = 'WebsiteView'
     readable_toggle = Gtk.Template.Child()
+    page_title = Gtk.Template.Child()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -92,31 +93,38 @@ class WebsiteView(Gtk.Box):
         self.add(self.www)
 
     def load_changed(self, webview, state):
+        if state == WebKit2.LoadEvent.STARTED:
+            self.readable_toggle.hide()
         finished = state == WebKit2.LoadEvent.FINISHED
         if not finished:
             return
         self.www.run_javascript_from_gresource('/hn/js/Readability.js', None, self._loaded_readability, None)
 
-    def load_uri(self, uri):
-        self.readable_toggle.hide()
+    def load_uri(self, uri, title):
+        self.page_title.set_label(title)
         self.www.load_uri(uri)
+
+    @Gtk.Template.Callback()
+    def open_in_browser_click(self, event):
+        print('in browser')
 
     @Gtk.Template.Callback()
     def readability_click(self, event):
         self.www.stop_loading()
         js = f'''
-          // clean head
           let h = document.head;
           for (let c of h.childNodes) h.removeChild(c);
-          // add previously-parsed article
+
           let article = new Readability(document).parse();
           document.querySelector('body').innerHTML = article.content;
+
           // add our style
           var style = document.createElement("style");
           style.innerHTML = '{READER_CSS}';
-          h.appendChild(style);
+          document.head.appendChild(style);
         '''
         self.www.run_javascript(js, None, None, None)
+        self.readable_toggle.hide()
 
     def _loaded_readability(self, resource, result, user_data):
         result = resource.run_javascript_from_gresource_finish(result)
@@ -169,7 +177,7 @@ class ThreadHeader(Gtk.Grid):
     @Gtk.Template.Callback()
     def article_click(self, event):
         window = self.get_toplevel()
-        window.set_website(self.article_url)
+        window.set_website(self.article_url, self.article_title)
 
     @Gtk.Template.Callback()
     def back_click(self, event):
@@ -178,6 +186,7 @@ class ThreadHeader(Gtk.Grid):
 
     def set_story_details(self, story):
         self.article_url = story.url
+        self.article_title = story.title
         self.title.set_label(story.title)
 
 @Gtk.Template(resource_path='/hn/ui/CommentThread.ui')
@@ -232,7 +241,7 @@ class NewsItem(Gtk.Grid):
     @Gtk.Template.Callback()
     def title_click(self, event):
         window = self.get_toplevel()
-        window.set_website(self.article_url)
+        window.set_website(self.article_url, self.thread_title)
 
     def _set_content(self, _item_id):
         story = get_story(_item_id)

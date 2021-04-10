@@ -12,6 +12,7 @@
   <file>css/reader_mode.css</file>
   <file>js/Readability.js</file>
   <file>icons/open-article.svg</file>
+  <file>icons/reader_mode.svg</file>
   <file>icons/reply.png</file>
   </gresource>
 </gresources>

@@ -124,3 +124,13 @@
 .round {
 	border-radius: 50px;
 }
+
+.www-header {
+  background-color: @hn_orange;
+}
+.www-header image {
+  padding: 5px;
+}
+.www-header label {
+  padding: 8px;
+}
