@@ -4,13 +4,17 @@
   <file>ui/MainWindow.ui</file>
   <file>ui/NewsList.ui</file>
   <file>ui/NewsItem.ui</file>
+  <file>ui/NewsHeader.ui</file>
   <file>ui/ThreadHeader.ui</file>
   <file>ui/CommentThread.ui</file>
   <file>ui/CommentItem.ui</file>
   <file>ui/WebsiteView.ui</file>
+  <file>ui/WebsiteHeader.ui</file>
   <file>css/style.css</file>
   <file>css/reader_mode.css</file>
   <file>js/Readability.js</file>
+  <file>icons/menu.svg</file>
+  <file>icons/refresh.svg</file>
   <file>icons/open-article.svg</file>
   <file>icons/reader_mode.svg</file>
   <file>icons/reply.png</file>

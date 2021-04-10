@@ -125,12 +125,16 @@
 	border-radius: 50px;
 }
 
-.www-header {
+.www-header, .news-header {
   background-color: @hn_orange;
+  color: black;
+}
+headerbar {
+  padding: 0px;
+}
+.news-header label {
+	color: black;
 }
 .www-header image {
   padding: 5px;
-}
-.www-header label {
-  padding: 8px;
 }

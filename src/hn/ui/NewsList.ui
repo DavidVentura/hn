@@ -12,7 +12,6 @@
         <property name="visible">True</property>
         <property name="hscrollbar_policy">never</property>
         <property name="shadow_type">in</property>
-        <signal name="edge-overshot" handler="edge_overshot" swapped="no"/>
 	<child>
           <object class="GtkBox" id="vbox">
             <property name="orientation">vertical</property>
