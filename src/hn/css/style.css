@@ -81,10 +81,6 @@
 	margin-left: 3px;
 	margin-right: 3px;
 }
-.thread-header {
-	background-color: @hn_orange;
-	padding: 8px;
-}
 .thread-back {
 	padding: 5px;
 	margin-left: 0px;
@@ -125,12 +121,12 @@
 	border-radius: 50px;
 }
 
-.www-header, .news-header {
+.www-header, .news-header, .thread-header {
   background-color: @hn_orange;
   color: black;
 }
 headerbar {
-  padding: 0px;
+  padding: 0px 8px 0px 8px;
 }
 .news-header label {
 	color: black;
