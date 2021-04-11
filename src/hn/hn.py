@@ -224,9 +224,12 @@ class ThreadHeader(Handy.HeaderBar):
 @Gtk.Template(resource_path='/hn/ui/CommentThread.ui')
 class CommentThread(Gtk.ScrolledWindow):
     __gtype_name__ = 'CommentThread'
-    #header = Gtk.Template.Child()
     comments_container = Gtk.Template.Child()
     header_comments_vbox = Gtk.Template.Child()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        Bus.on("open_thread", self.async_load_thread)
 
     def async_load_thread(self, story):
         BG_TASKS.submit(self._load_thread, story.story_id)
@@ -243,8 +246,6 @@ class CommentThread(Gtk.ScrolledWindow):
             widget1.set_visible(True)
             self.comments_container.pack_start(widget1, 0, 0, 0)  ## fill and expand
 
-def comments_click(event):
-    print('asd')
 
 @Gtk.Template(resource_path='/hn/ui/NewsItem.ui')
 class NewsItem(Gtk.Grid):
