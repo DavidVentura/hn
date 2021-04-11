@@ -62,7 +62,6 @@ class AppWindow(Handy.ApplicationWindow):
 
     def set_thread(self, story):
         self.stack.set_visible_child(self.ct)
-        self.ct.async_load_thread(story)
     
     def set_news(self):
         self.stack.set_visible_child(self.news_list)
@@ -232,12 +231,11 @@ class CommentThread(Gtk.ScrolledWindow):
         Bus.on("open_thread", self.async_load_thread)
 
     def async_load_thread(self, story):
-        BG_TASKS.submit(self._load_thread, story.story_id)
+        BG_TASKS.submit(self._load_thread, story)
 
-    def _load_thread(self, thread_id):
+    def _load_thread(self, story):
         for child in self.comments_container.get_children():
             GLib.idle_add(child.destroy)
-        story = get_story(thread_id)
         GLib.idle_add(self._set_comments, story.kids)
 
     def _set_comments(self, comments):
@@ -297,6 +295,7 @@ class CommentItem(Gtk.Box):
     replies = Gtk.Template.Child()
     revealer_img = Gtk.Template.Child()
     revealer_event = Gtk.Template.Child()
+
     def __init__(self, _item_id, nesting, *args, **kwds):
         super().__init__(*args, **kwds)
         self.rendered = False
