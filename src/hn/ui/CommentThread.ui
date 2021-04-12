@@ -58,11 +58,15 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="resource">/hn/icons/reply.png</property>
+                <style>
+                  <class name="round"/>
+                </style>
               </object>
             </child>
             <style>
               <class name="thread-reply-action"/>
               <class name="round"/>
+              <class name="flat"/>
             </style>
           </object>
         </child>
