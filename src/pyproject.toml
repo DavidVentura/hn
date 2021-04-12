@@ -3,10 +3,11 @@ name = "hn"
 version = "0.1.0"
 description = ""
 authors = ["david <davidventura27@gmail.com>"]
-include = ["resources"]
+include = ["hn/resources"]
+exclude = ["hn/ui/", "hn/icons"]
 
 [tool.poetry.scripts]
-hn = "hn.hn:main"
+hn = "hn.app:main"
 
 [tool.poetry.dependencies]
 beautifulsoup4 = "4.9.3"
