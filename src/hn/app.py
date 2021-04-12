@@ -358,7 +358,7 @@ class Application(Gtk.Application):
         super().__init__(*args, application_id="hn.app", **kwargs)
 
     def do_activate(self):
-        self.window = AppWindow(application=self, title="Main Window")
+        self.window = AppWindow(application=self, title="Hacker News")
         self.window.present()
         Bus.emit("refresh_news_list")
 
