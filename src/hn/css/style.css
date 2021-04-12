@@ -31,6 +31,7 @@
 	background-color: @bg_grey;
 	box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.18);
 	margin-bottom: 5px;
+	font-size: 13px;
 }
 
 .comment-item-time_user { margin-bottom: 10px; }
