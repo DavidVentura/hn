@@ -57,7 +57,7 @@
               <object class="GtkImage">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="resource">/hn/icons/reply.png</property>
+                <property name="resource">/hn/icons/reply.svg</property>
                 <style>
                   <class name="round"/>
                 </style>
