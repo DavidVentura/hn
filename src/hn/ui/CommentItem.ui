@@ -42,7 +42,7 @@
               <object class="GtkImage" id="revealer_img">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="stock">gtk-go-up</property>
+		<property name="resource">/hn/icons/arrow_up.svg</property>
                 <property name="icon_size">2</property>
                 <style>
                   <class name="comment-item-toggle"/>

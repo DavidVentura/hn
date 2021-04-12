@@ -18,7 +18,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">start</property>
-            <property name="stock">gtk-go-back</property>
+	    <property name="resource">/hn/icons/back.svg</property>
             <style>
               <class name="thread-back"/>
             </style>
