@@ -5,14 +5,14 @@
     <property name="vexpand">1</property>
     <child>
       <object class="GtkScrolledWindow" id="scrolled_window">
-        <property name="visible">0</property>
+        
         <property name="can_focus">0</property>
         <property name="hexpand">1</property>
         <property name="vexpand">1</property>
         <property name="hscrollbar_policy">never</property>
         <property name="child">
           <object class="GtkBox" id="vbox">
-            <property name="visible">0</property>
+            
             <property name="orientation">vertical</property>
           </object>
         </property>

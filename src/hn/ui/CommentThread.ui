@@ -4,23 +4,23 @@
   <template class="CommentThread">
     <child>
       <object class="GtkOverlay">
-        <property name="visible">0</property>
+        
         <property name="child">
           <object class="GtkScrolledWindow">
-            <property name="visible">0</property>
+            
             <property name="hscrollbar_policy">never</property>
             <property name="child">
               <object class="GtkViewport">
-                <property name="visible">0</property>
+                
                 <property name="can_focus">0</property>
                 <property name="child">
                   <object class="GtkBox" id="header_comments_vbox">
-                    <property name="visible">0</property>
+                    
                     <property name="can_focus">0</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkBox" id="comments_container">
-                        <property name="visible">0</property>
+                        
                         <property name="can_focus">0</property>
                         <property name="vexpand">1</property>
                         <property name="valign">start</property>
@@ -44,12 +44,12 @@
         </property>
         <child type="overlay">
           <object class="GtkButton" id="thread_reply">
-            <property name="visible">0</property>
+            
             <property name="valign">end</property>
             <property name="halign">end</property>
             <child>
               <object class="GtkImage">
-                <property name="visible">0</property>
+                
                 <property name="can_focus">0</property>
                 <property name="resource">/hn/icons/reply.svg</property>
                 <style>

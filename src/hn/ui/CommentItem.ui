@@ -6,12 +6,12 @@
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkBox" id="comment_body">
-        <property name="visible">0</property>
+        
         <property name="orientation">vertical</property>
         <property name="can_focus">0</property>
         <child>
           <object class="GtkLabel" id="time_lbl">
-            <property name="visible">0</property>
+            
             <property name="can_focus">0</property>
             <property name="label" translatable="yes">...</property>
             <property name="xalign">0</property>
@@ -22,7 +22,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="comment">
-            <property name="visible">0</property>
+            
             <property name="can_focus">0</property>
             <property name="vexpand">1</property>
             <property name="hexpand">1</property>
@@ -35,11 +35,11 @@
         </child>
         <child>
           <object class="GtkButton" id="revealer_event">
-            <property name="visible">0</property>
+            
             <signal name="clicked" handler="reveal_replies_click" swapped="no"/>
             <child>
               <object class="GtkImage" id="revealer_img">
-                <property name="visible">0</property>
+                
                 <property name="can_focus">0</property>
                 <property name="resource">/hn/icons/arrow_up.svg</property>
                 <property name="icon_size">2</property>
@@ -60,12 +60,12 @@
     </child>
     <child>
       <object class="GtkRevealer" id="replies_container">
-        <property name="visible">0</property>
+        
         <property name="can_focus">0</property>
         <property name="transition_type">slide-up</property>
         <property name="child">
           <object class="GtkBox" id="replies">
-            <property name="visible">0</property>
+            
             <property name="can_focus">0</property>
             <property name="vexpand">1</property>
             <property name="orientation">vertical</property>

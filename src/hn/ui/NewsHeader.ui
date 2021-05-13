@@ -4,12 +4,12 @@
   <template class="NewsHeader" parent="AdwHeaderBar">
     <child>
       <object class="GtkButton">
-        <property name="visible">0</property>
+        
         <signal name="clicked" handler="menu_click" swapped="no"/>
         <property name="can_focus">0</property>
         <child>
           <object class="GtkImage" id="back_icon">
-            <property name="visible">0</property>
+            
             <property name="can_focus">0</property>
             <property name="halign">start</property>
             <property name="resource">/hn/icons/menu.svg</property>
@@ -27,7 +27,7 @@
     </child>
     <child type="title">
       <object class="GtkLabel" id="page_title">
-        <property name="visible">0</property>
+        
         <property name="hexpand">1</property>
         <property name="can_focus">0</property>
         <property name="halign">center</property>
@@ -37,16 +37,16 @@
     </child>
     <child>
       <object class="GtkBox">
-        <property name="visible">0</property>
+        
         <property name="halign">end</property>
         <child>
           <object class="GtkButton">
-            <property name="visible">0</property>
+            
             <signal name="clicked" handler="on_refresh"/>
             <property name="can_focus">0</property>
             <child>
               <object class="GtkImage">
-                <property name="visible">0</property>
+                
                 <property name="can_focus">0</property>
                 <property name="halign">end</property>
                 <property name="resource">/hn/icons/refresh.svg</property>

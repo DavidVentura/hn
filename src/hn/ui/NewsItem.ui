@@ -6,12 +6,12 @@
     <signal name="show" handler="on_show" swapped="no"/>
     <child>
       <object class="GtkButton" id="title_event">
-        <property name="visible">0</property>
+        
         <property name="can_focus">0</property>
         <signal name="clicked" handler="title_click" swapped="no"/>
         <child>
           <object class="GtkLabel" id="title">
-            <property name="visible">0</property>
+            
             <property name="can_focus">0</property>
             <property name="halign">start</property>
             <property name="hexpand">1</property>
@@ -32,7 +32,7 @@
     </child>
     <child>
       <object class="GtkLabel" id="url">
-        <property name="visible">0</property>
+        
         <property name="can_focus">0</property>
         <property name="halign">start</property>
         <property name="hexpand">1</property>
@@ -44,13 +44,13 @@
     </child>
     <child>
       <object class="GtkButton" id="comments_btn">
-        <property name="visible">0</property>
+        
         <signal name="clicked" handler="comments_click"/>
         <property name="can_focus">0</property>
         <property name="vexpand">1</property>
         <child>
           <object class="GtkLabel" id="comments">
-            <property name="visible">0</property>
+            
             <property name="label" translatable="yes">...</property>
             <property name="width-chars">4</property>
             <style>
