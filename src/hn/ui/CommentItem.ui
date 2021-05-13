@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
 <interface>
-  <requires lib="gtk+" version="4.0"/>
+  <requires lib="gtk" version="4.0"/>
   <template class="CommentItem" parent="GtkBox">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
+    <property name="can_focus">0</property>
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkBox" id="comment_body">
+        <property name="visible">0</property>
         <property name="orientation">vertical</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can_focus">0</property>
         <child>
           <object class="GtkLabel" id="time_lbl">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="visible">0</property>
+            <property name="can_focus">0</property>
             <property name="label" translatable="yes">...</property>
             <property name="xalign">0</property>
             <style>
@@ -24,25 +22,26 @@
         </child>
         <child>
           <object class="GtkLabel" id="comment">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="vexpand">True</property>
-            <property name="hexpand">True</property>
+            <property name="visible">0</property>
+            <property name="can_focus">0</property>
+            <property name="vexpand">1</property>
+            <property name="hexpand">1</property>
             <property name="label" translatable="yes">...</property>
-            <property name="wrap">True</property>
-            <property name="selectable">True</property>
+            <property name="wrap">1</property>
+            <property name="selectable">1</property>
             <property name="xalign">0</property>
             <signal name="activate-link" handler="activate_link" swapped="no"/>
           </object>
         </child>
         <child>
           <object class="GtkButton" id="revealer_event">
+            <property name="visible">0</property>
             <signal name="clicked" handler="reveal_replies_click" swapped="no"/>
             <child>
               <object class="GtkImage" id="revealer_img">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-		<property name="resource">/hn/icons/arrow_up.svg</property>
+                <property name="visible">0</property>
+                <property name="can_focus">0</property>
+                <property name="resource">/hn/icons/arrow_up.svg</property>
                 <property name="icon_size">2</property>
                 <style>
                   <class name="comment-item-toggle"/>
@@ -57,34 +56,24 @@
         <style>
           <class name="comment-item-body"/>
         </style>
-        <layout>
-          <property name="expand">False</property>
-          <property name="fill">True</property>
-          <property name="position">0</property>
-        </layout>
       </object>
     </child>
     <child>
       <object class="GtkRevealer" id="replies_container">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="visible">0</property>
+        <property name="can_focus">0</property>
         <property name="transition_type">slide-up</property>
-        <child>
+        <property name="child">
           <object class="GtkBox" id="replies">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="vexpand">True</property>
+            <property name="visible">0</property>
+            <property name="can_focus">0</property>
+            <property name="vexpand">1</property>
             <property name="orientation">vertical</property>
             <style>
               <class name="comment-replies"/>
             </style>
           </object>
-        </child>
-        <layout>
-          <property name="expand">False</property>
-          <property name="fill">True</property>
-          <property name="position">1</property>
-        </layout>
+        </property>
       </object>
     </child>
     <style>

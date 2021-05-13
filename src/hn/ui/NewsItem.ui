@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
 <interface>
-  <requires lib="gtk+" version="4.0"/>
+  <requires lib="gtk" version="4.0"/>
   <template class="NewsItem" parent="GtkGrid">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
+    <property name="can_focus">0</property>
     <signal name="show" handler="on_show" swapped="no"/>
     <child>
       <object class="GtkButton" id="title_event">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="visible">0</property>
+        <property name="can_focus">0</property>
         <signal name="clicked" handler="title_click" swapped="no"/>
         <child>
           <object class="GtkLabel" id="title">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="visible">0</property>
+            <property name="can_focus">0</property>
             <property name="halign">start</property>
-            <property name="hexpand">True</property>
+            <property name="hexpand">1</property>
             <property name="label" translatable="yes">...</property>
-            <property name="wrap">True</property>
+            <property name="wrap">1</property>
             <property name="xalign">0</property>
           </object>
         </child>
@@ -26,33 +24,33 @@
           <class name="flat"/>
         </style>
         <layout>
-          <property name="left_attach">0</property>
-          <property name="top_attach">0</property>
-          <property name="height">2</property>
+          <property name="column">0</property>
+          <property name="row">0</property>
+          <property name="row-span">2</property>
         </layout>
       </object>
     </child>
     <child>
       <object class="GtkLabel" id="url">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="visible">0</property>
+        <property name="can_focus">0</property>
         <property name="halign">start</property>
-        <property name="hexpand">True</property>
+        <property name="hexpand">1</property>
         <layout>
-          <property name="left_attach">0</property>
-          <property name="top_attach">2</property>
+          <property name="column">0</property>
+          <property name="row">2</property>
         </layout>
       </object>
     </child>
     <child>
       <object class="GtkButton" id="comments_btn">
-        <signal name="clicked" handler="comments_click" />
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="vexpand">True</property>
+        <property name="visible">0</property>
+        <signal name="clicked" handler="comments_click"/>
+        <property name="can_focus">0</property>
+        <property name="vexpand">1</property>
         <child>
           <object class="GtkLabel" id="comments">
-            <property name="visible">True</property>
+            <property name="visible">0</property>
             <property name="label" translatable="yes">...</property>
             <property name="width-chars">4</property>
             <style>
@@ -65,9 +63,9 @@
           <class name="flat"/>
         </style>
         <layout>
-          <property name="left_attach">1</property>
-          <property name="top_attach">0</property>
-          <property name="height">3</property>
+          <property name="column">1</property>
+          <property name="row">0</property>
+          <property name="row-span">3</property>
         </layout>
       </object>
     </child>

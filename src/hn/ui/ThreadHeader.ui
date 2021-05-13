@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
 <interface>
-  <requires lib="gtk+" version="4.0"/>
+  <requires lib="gtk" version="4.0"/>
   <template class="ThreadHeader" parent="AdwHeaderBar">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
     <child>
       <object class="GtkButton" id="back_event">
+        <property name="visible">0</property>
         <signal name="clicked" handler="back_click" swapped="no"/>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="hexpand">False</property>
+        <property name="can_focus">0</property>
+        <property name="hexpand">0</property>
         <property name="halign">start</property>
         <child>
           <object class="GtkImage" id="back_icon">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="visible">0</property>
+            <property name="can_focus">0</property>
             <property name="halign">start</property>
-	    <property name="resource">/hn/icons/back.svg</property>
+            <property name="resource">/hn/icons/back.svg</property>
             <style>
               <class name="thread-back"/>
             </style>
@@ -31,12 +28,12 @@
     </child>
     <child type="title">
       <object class="GtkLabel" id="title">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="visible">0</property>
+        <property name="can_focus">0</property>
         <property name="halign">center</property>
-        <property name="hexpand">True</property>
+        <property name="hexpand">1</property>
         <property name="label" translatable="yes">...</property>
-        <property name="wrap">True</property>
+        <property name="wrap">1</property>
         <property name="ellipsize">end</property>
         <style>
           <class name="thread-title"/>
@@ -45,14 +42,14 @@
     </child>
     <child>
       <object class="GtkButton" id="article_event">
+        <property name="visible">0</property>
         <signal name="clicked" handler="article_click" swapped="no"/>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can_focus">0</property>
         <property name="halign">end</property>
         <child>
           <object class="GtkImage">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="visible">0</property>
+            <property name="can_focus">0</property>
             <property name="halign">end</property>
             <property name="resource">/hn/icons/open-article.svg</property>
             <style>
@@ -64,9 +61,6 @@
           <class name="flat"/>
           <class name="round"/>
         </style>
-        <layout>
-          <property name="pack_type">end</property>
-        </layout>
       </object>
     </child>
     <style>

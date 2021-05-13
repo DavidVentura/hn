@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
 <interface>
-  <requires lib="gtk+" version="4.0"/>
+  <requires lib="gtk" version="4.0"/>
   <template class="WebsiteHeader" parent="AdwHeaderBar">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
     <child>
       <object class="GtkButton">
+        <property name="visible">0</property>
         <signal name="clicked" handler="back_click" swapped="no"/>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can_focus">0</property>
         <child>
           <object class="GtkImage" id="back_icon">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="visible">0</property>
+            <property name="can_focus">0</property>
             <property name="halign">start</property>
-	    <property name="resource">/hn/icons/back.svg</property>
+            <property name="resource">/hn/icons/back.svg</property>
             <style>
               <class name="thread-back"/>
             </style>
@@ -29,26 +26,26 @@
     </child>
     <child type="title">
       <object class="GtkLabel" id="page_title">
-        <property name="hexpand">true</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="visible">0</property>
+        <property name="hexpand">1</property>
+        <property name="can_focus">0</property>
         <property name="halign">center</property>
         <property name="ellipsize">end</property>
       </object>
     </child>
     <child>
       <object class="GtkBox">
-        <property name="orientation">horizontal</property>
+        <property name="visible">0</property>
         <property name="halign">end</property>
         <child>
           <object class="GtkButton" id="readable_toggle">
             <signal name="clicked" handler="readability_click" swapped="no"/>
-            <property name="visible">False</property>
-            <property name="can_focus">False</property>
+            <property name="visible">0</property>
+            <property name="can_focus">0</property>
             <child>
               <object class="GtkImage">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="visible">0</property>
+                <property name="can_focus">0</property>
                 <property name="halign">end</property>
                 <property name="resource">/hn/icons/reader_mode.svg</property>
                 <style>
@@ -64,12 +61,13 @@
         </child>
         <child>
           <object class="GtkButton">
+            <property name="visible">0</property>
             <signal name="clicked" handler="open_in_browser_click" swapped="no"/>
-            <property name="can_focus">False</property>
+            <property name="can_focus">0</property>
             <child>
               <object class="GtkImage">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="visible">0</property>
+                <property name="can_focus">0</property>
                 <property name="halign">end</property>
                 <property name="icon_size">2</property>
                 <property name="resource">/hn/icons/open-article.svg</property>
@@ -84,9 +82,6 @@
             </style>
           </object>
         </child>
-        <layout>
-          <property name="pack_type">end</property>
-        </layout>
       </object>
     </child>
     <style>

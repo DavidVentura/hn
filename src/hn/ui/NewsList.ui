@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
 <interface>
-  <requires lib="gtk+" version="4.0"/>
+  <requires lib="gtk" version="4.0"/>
   <template class="NewsList" parent="GtkBox">
-    <property name="can_focus">True</property>
-    <property name="vexpand">True</property>
+    <property name="vexpand">1</property>
     <child>
       <object class="GtkScrolledWindow" id="scrolled_window">
-        <property name="can_focus">False</property>
-        <property name="hexpand">True</property>
-        <property name="vexpand">True</property>
-        <property name="visible">True</property>
+        <property name="visible">0</property>
+        <property name="can_focus">0</property>
+        <property name="hexpand">1</property>
+        <property name="vexpand">1</property>
         <property name="hscrollbar_policy">never</property>
-	<child>
+        <property name="child">
           <object class="GtkBox" id="vbox">
+            <property name="visible">0</property>
             <property name="orientation">vertical</property>
-	  </object>
-	</child>
+          </object>
+        </property>
       </object>
     </child>
   </template>

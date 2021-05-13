@@ -1,50 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
 <interface>
-  <requires lib="gtk+" version="4.0"/>
+  <requires lib="gtk" version="4.0"/>
   <requires lib="libadwaita" version="1.0"/>
   <template class="AppWindow" parent="AdwApplicationWindow">
-    <property name="can_focus">False</property>
-    <property name="default_width">360</property>
-    <property name="default_height">720</property>
     <child>
       <object class="GtkBox">
+        <property name="visible">0</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="AdwLeaflet" id="header_stack">
-            <property name="visible">True</property>
-            <property name="transition_type">slide</property>
-            <property name="hexpand">True</property>
-            <property name="can_unfold">False</property>
             <child>
-              <object class="NewsHeader"></object>
+              <object class="NewsHeader"/>
             </child>
             <child>
-              <object class="ThreadHeader"></object>
+              <object class="ThreadHeader"/>
             </child>
             <child>
-              <object class="WebsiteHeader"></object>
+              <object class="WebsiteHeader"/>
             </child>
           </object>
         </child>
         <child>
           <object class="AdwLeaflet" id="stack">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="can_swipe_back">True</property>
-            <property name="visible_child">news_list</property>
-            <property name="transition_type">slide</property>
-            <property name="can_unfold">False</property>
-            <property name="hexpand">True</property>
-            <property name="vexpand">True</property>
             <child>
-              <object class="NewsList" id="news_list"></object>
+              <object class="NewsList" id="news_list"/>
             </child>
             <child>
-              <object class="CommentThread" id="ct"></object>
+              <object class="CommentThread" id="ct"/>
             </child>
             <child>
-              <object class="WebsiteView" id="www"></object>
+              <object class="WebsiteView" id="www"/>
             </child>
           </object>
         </child>
@@ -53,8 +38,8 @@
   </template>
   <object class="AdwSwipeGroup">
     <swipeables>
-      <swipeable name="header_stack" />
-      <swipeable name="stack" />
+      <swipeable name="header_stack"/>
+      <swipeable name="stack"/>
     </swipeables>
   </object>
 </interface>
