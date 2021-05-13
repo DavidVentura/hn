@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.22.2 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
-  <template class="WebsiteHeader" parent="HdyHeaderBar">
+  <requires lib="gtk+" version="4.0"/>
+  <template class="WebsiteHeader" parent="AdwHeaderBar">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
@@ -43,7 +43,6 @@
         <child>
           <object class="GtkButton" id="readable_toggle">
             <signal name="clicked" handler="readability_click" swapped="no"/>
-            <property name="no-show-all">True</property>
             <property name="visible">False</property>
             <property name="can_focus">False</property>
             <child>
@@ -85,10 +84,10 @@
             </style>
           </object>
         </child>
+        <layout>
+          <property name="pack_type">end</property>
+        </layout>
       </object>
-      <packing>
-        <property name="pack_type">end</property>
-      </packing>
     </child>
     <style>
       <class name="www-header"/>

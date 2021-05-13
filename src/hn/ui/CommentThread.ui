@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.22.2 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
+  <requires lib="gtk+" version="4.0"/>
   <template class="CommentThread">
     <child>
       <object class="GtkOverlay">
@@ -10,7 +10,6 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="hscrollbar_policy">never</property>
-            <property name="shadow_type">in</property>
             <child>
               <object class="GtkViewport">
                 <property name="visible">True</property>
@@ -33,12 +32,12 @@
                         <style>
                           <class name="thread-comments"/>
                         </style>
+                        <layout>
+                          <property name="expand">True</property>
+                          <property name="fill">True</property>
+                          <property name="position">1</property>
+                        </layout>
                       </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
                     </child>
                     <style>
                       <class name="thread-complete"/>

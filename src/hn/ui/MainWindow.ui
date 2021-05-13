@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.22.2 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
-  <requires lib="libhandy" version="1.0"/>
-  <template class="AppWindow" parent="HdyApplicationWindow">
+  <requires lib="gtk+" version="4.0"/>
+  <requires lib="libadwaita" version="1.0"/>
+  <template class="AppWindow" parent="AdwApplicationWindow">
     <property name="can_focus">False</property>
     <property name="default_width">360</property>
     <property name="default_height">720</property>
@@ -11,10 +11,11 @@
       <object class="GtkBox">
         <property name="orientation">vertical</property>
         <child>
-          <object class="HdyDeck" id="header_stack">
+          <object class="AdwLeaflet" id="header_stack">
             <property name="visible">True</property>
             <property name="transition_type">slide</property>
             <property name="hexpand">True</property>
+            <property name="can_unfold">False</property>
             <child>
               <object class="NewsHeader"></object>
             </child>
@@ -27,12 +28,15 @@
           </object>
         </child>
         <child>
-          <object class="HdyDeck" id="stack">
+          <object class="AdwLeaflet" id="stack">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="can_swipe_back">True</property>
             <property name="visible_child">news_list</property>
             <property name="transition_type">slide</property>
+            <property name="can_unfold">False</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
             <child>
               <object class="NewsList" id="news_list"></object>
             </child>
@@ -47,7 +51,7 @@
       </object>
     </child>
   </template>
-  <object class="HdySwipeGroup">
+  <object class="AdwSwipeGroup">
     <swipeables>
       <swipeable name="header_stack" />
       <swipeable name="stack" />
