@@ -55,14 +55,10 @@ class AppWindow(Adw.ApplicationWindow):
         css_provider = Gtk.CssProvider()
         css_provider.load_from_resource('/hn/css/style.css')
 
-        context = Gtk.StyleContext()
         display = Gdk.Display.get_default()
 
-        # FIXME: segfaults
-        # https://gitlab.gnome.org/GNOME/gtk/-/issues/3566
-        # https://gitlab.gnome.org/GNOME/pygobject/-/issues/452
-        #context.add_provider_for_display(display, css_provider,
-        #                                 Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        Gtk.StyleContext.add_provider_for_display(display, css_provider,
+                                                  Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
     def set_thread(self, story):
         self.stack.set_visible_child(self.ct)
