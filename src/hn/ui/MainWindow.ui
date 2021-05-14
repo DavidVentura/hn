@@ -5,10 +5,10 @@
   <template class="AppWindow" parent="AdwApplicationWindow">
     <child>
       <object class="GtkBox">
-        
         <property name="orientation">vertical</property>
         <child>
           <object class="AdwLeaflet" id="header_stack">
+            <property name="can-unfold">False</property>
             <child>
               <object class="NewsHeader"/>
             </child>
@@ -22,6 +22,7 @@
         </child>
         <child>
           <object class="AdwLeaflet" id="stack">
+            <property name="can-unfold">False</property>
             <property name="vexpand">True</property>
             <child>
               <object class="NewsList" id="news_list"/>

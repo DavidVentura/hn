@@ -9,9 +9,9 @@ import gi
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-#gi.require_version("WebKit2", "4.0")
+gi.require_version("WebKit2", "4.0")
 #from gi.repository import Gtk, GLib, Gdk, WebKit2, GdkPixbuf, Gio, Adwaita
-from gi.repository import Gtk, GLib, Gdk, GdkPixbuf, Gio, Adw
+from gi.repository import Gtk, GLib, Gdk, GdkPixbuf, Gio, Adw, GObject
 
 from hn.api import top_stories, get_comment, get_story, Comment, Story
 from hn.bus import Bus
@@ -57,9 +57,8 @@ class AppWindow(Adw.ApplicationWindow):
 
         context = Gtk.StyleContext()
         display = Gdk.Display.get_default()
-        print(display)
 
-        # segfaults
+        # FIXME: segfaults
         # https://gitlab.gnome.org/GNOME/gtk/-/issues/3566
         # https://gitlab.gnome.org/GNOME/pygobject/-/issues/452
         #context.add_provider_for_display(display, css_provider,
@@ -171,15 +170,36 @@ class WebsiteView(Gtk.Box):
 
 
 @Gtk.Template(resource_path='/hn/ui/NewsList.ui')
-class NewsList(Gtk.Box):
+class NewsList(Gtk.ScrolledWindow):
     __gtype_name__ = 'NewsList'
-    vbox = Gtk.Template.Child()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # TODO
+        self.list_store = Gio.ListStore.new(IDHolder)
+
+        self.factory = Gtk.SignalListItemFactory()
+        self.factory.connect('setup', self.on_setup_listitem)
+        self.factory.connect('bind', self.on_bind_listitem)
+        self.selection = Gtk.NoSelection.new(self.list_store)
+        self.list_view = Gtk.ListView.new(self.selection, self.factory)
+        self.list_view.set_show_separators(False)
+        self.set_child(self.list_view)
+        self.list_view.set_single_click_activate(True)
         Bus.on('refresh_news_list', self.async_refresh)
 
+    def on_setup_listitem(self, factory: Gtk.ListItemFactory,
+                          list_item: Gtk.ListItem):
+        list_item.set_child(NewsItem())
+
+    def on_bind_listitem(self, factory: Gtk.ListItemFactory,
+                         list_item: Gtk.ListItem):
+        c = list_item.get_child()
+        val = list_item.get_item()._id
+        c.populate(val)
+
     def _refresh(self):
+        print('_refresh')
         stories = top_stories()
         GLib.idle_add(self.set_items, stories[:50])  # FIXME
 
@@ -187,15 +207,14 @@ class NewsList(Gtk.Box):
         BG_TASKS.submit(self._refresh)
 
     def set_items(self, news_item):
-        fc = self.vbox.get_first_child()
-        while fc:
-            _fc = fc.get_next_sibling()
-            self.vbox.remove(fc)
-            fc = _fc 
-
+        self.list_store.remove_all()
         for i in news_item:
-            widget = NewsItem(i)
-            self.vbox.prepend(widget)
+            self.list_store.append(IDHolder(i))
+
+class IDHolder(GObject.Object):
+    def __init__(self, _id):
+        super().__init__()
+        self._id = _id
 
 @Gtk.Template(resource_path='/hn/ui/NewsHeader.ui')
 class NewsHeader(Adw.HeaderBar):
@@ -268,14 +287,12 @@ class NewsItem(Gtk.Grid):
     comments_btn = Gtk.Template.Child()
     title_event = Gtk.Template.Child()
 
-    def __init__(self, _item_id, *args, **kwds):
+    def __init__(self, *args, **kwds):
         super().__init__(*args, **kwds)
         self.article_url = None
-        self.thread_id = _item_id
-        self.on_show()
 
-    def on_show(self):
-        BG_TASKS.submit(self._set_content, self.thread_id)
+    def populate(self, thread_id):
+        BG_TASKS.submit(self._set_content, thread_id)
 
     @Gtk.Template.Callback()
     def comments_click(self, event):
