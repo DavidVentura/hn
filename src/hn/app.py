@@ -7,17 +7,18 @@ from pathlib import Path
 
 import gi
 
-gi.require_version("Handy", "1")
-gi.require_version("Gtk", "3.0")
+gi.require_version("Gtk", "4.0")
+gi.require_version("Adw", "1")
 gi.require_version("WebKit2", "4.0")
-from gi.repository import Gtk, GLib, Gdk, WebKit2, GdkPixbuf, Gio, Handy
+#from gi.repository import Gtk, GLib, Gdk, WebKit2, GdkPixbuf, Gio, Adwaita
+from gi.repository import Gtk, GLib, Gdk, GdkPixbuf, Gio, Adw, GObject
 
 from hn.api import top_stories, get_comment, get_story, Comment, Story
 from hn.bus import Bus
 
 BG_TASKS = ThreadPoolExecutor(max_workers=4)
 WEBEXT_DIR = '/home/david/git/webkit-webextension'
-Handy.init()  # Must call this otherwise the Template() calls don't know how to resolve any Hdy* widgets
+Adw.init()  # Must call this otherwise the Template() calls don't know how to resolve any Hdy* widgets
 
 def load_icon_to_pixbuf(name, width):
     path = f'/hn/icons/{name}'
@@ -33,7 +34,7 @@ READER_CSS = _rs.get_data().decode().replace('\n', '')
 
 
 @Gtk.Template(resource_path='/hn/ui/MainWindow.ui')
-class AppWindow(Handy.ApplicationWindow):
+class AppWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'AppWindow'
 
     ct = Gtk.Template.Child()
@@ -46,19 +47,18 @@ class AppWindow(Handy.ApplicationWindow):
         self.old_child = None
         self.setup_styles()
         self.set_default_size(360, 720)
-        self.show_all()
 
         Bus.on("open_thread", self.set_thread)
         Bus.on("open_website", self.set_website)
 
     def setup_styles(self):
         css_provider = Gtk.CssProvider()
-        context = Gtk.StyleContext()
-        screen = Gdk.Screen.get_default()
-
         css_provider.load_from_resource('/hn/css/style.css')
-        context.add_provider_for_screen(screen, css_provider,
-                                        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+
+        display = Gdk.Display.get_default()
+
+        Gtk.StyleContext.add_provider_for_display(display, css_provider,
+                                                  Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
     def set_thread(self, story):
         self.stack.set_visible_child(self.ct)
@@ -77,7 +77,7 @@ class AppWindow(Handy.ApplicationWindow):
 
 
 @Gtk.Template(resource_path='/hn/ui/WebsiteHeader.ui')
-class WebsiteHeader(Handy.HeaderBar):
+class WebsiteHeader(Adw.HeaderBar):
     __gtype_name__ = 'WebsiteHeader'
     readable_toggle = Gtk.Template.Child()
     page_title = Gtk.Template.Child()
@@ -101,7 +101,7 @@ class WebsiteHeader(Handy.HeaderBar):
     def back_click(self, event):
         Bus.emit("trigger_stop_website")
         # FIXME
-        window = self.get_toplevel()
+        window = self.get_root()
         window.pop_website()
 
 @Gtk.Template(resource_path='/hn/ui/WebsiteView.ui')
@@ -112,6 +112,8 @@ class WebsiteView(Gtk.Box):
         super().__init__(*args, **kwargs)
         # https://stackoverflow.com/questions/60126579/gtk-builder-error-quark-invalid-object-type-webkitwebview
         # Can't have the WevView in ui file without hacks, doing it programatically is clearer
+        # FIXME need to update WebKit
+        return
         ctx = WebKit2.WebContext.get_default()
         ctx.set_web_extensions_directory(WEBEXT_DIR)
         self.www = WebKit2.WebView.new_with_context(ctx)
@@ -164,15 +166,36 @@ class WebsiteView(Gtk.Box):
 
 
 @Gtk.Template(resource_path='/hn/ui/NewsList.ui')
-class NewsList(Gtk.Bin):
+class NewsList(Gtk.ScrolledWindow):
     __gtype_name__ = 'NewsList'
-    vbox = Gtk.Template.Child()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # TODO
+        self.list_store = Gio.ListStore.new(IDHolder)
+
+        self.factory = Gtk.SignalListItemFactory()
+        self.factory.connect('setup', self.on_setup_listitem)
+        self.factory.connect('bind', self.on_bind_listitem)
+        self.selection = Gtk.NoSelection.new(self.list_store)
+        self.list_view = Gtk.ListView.new(self.selection, self.factory)
+        self.list_view.set_show_separators(False)
+        self.set_child(self.list_view)
+        self.list_view.set_single_click_activate(True)
         Bus.on('refresh_news_list', self.async_refresh)
 
+    def on_setup_listitem(self, factory: Gtk.ListItemFactory,
+                          list_item: Gtk.ListItem):
+        list_item.set_child(NewsItem())
+
+    def on_bind_listitem(self, factory: Gtk.ListItemFactory,
+                         list_item: Gtk.ListItem):
+        c = list_item.get_child()
+        val = list_item.get_item()._id
+        c.populate(val)
+
     def _refresh(self):
+        print('_refresh')
         stories = top_stories()
         GLib.idle_add(self.set_items, stories[:50])  # FIXME
 
@@ -180,23 +203,29 @@ class NewsList(Gtk.Bin):
         BG_TASKS.submit(self._refresh)
 
     def set_items(self, news_item):
-        for child in self.vbox.get_children():
-            GLib.idle_add(child.destroy)
-
+        self.list_store.remove_all()
         for i in news_item:
-            widget = NewsItem(i)
-            self.vbox.pack_start(widget, 0, 0, 0)
+            self.list_store.append(IDHolder(i))
+
+class IDHolder(GObject.Object):
+    def __init__(self, _id):
+        super().__init__()
+        self._id = _id
 
 @Gtk.Template(resource_path='/hn/ui/NewsHeader.ui')
-class NewsHeader(Handy.HeaderBar):
+class NewsHeader(Adw.HeaderBar):
     __gtype_name__ = 'NewsHeader'
+
+    @Gtk.Template.Callback()
+    def menu_click(self, event):
+        Bus.emit("menu_click")
 
     @Gtk.Template.Callback()
     def on_refresh(self, event):
         Bus.emit("refresh_news_list")
 
 @Gtk.Template(resource_path='/hn/ui/ThreadHeader.ui')
-class ThreadHeader(Handy.HeaderBar):
+class ThreadHeader(Adw.HeaderBar):
     __gtype_name__ = 'ThreadHeader'
 
     title = Gtk.Template.Child()
@@ -212,7 +241,7 @@ class ThreadHeader(Handy.HeaderBar):
     @Gtk.Template.Callback()
     def back_click(self, event):
         # FIXME
-        window = self.get_toplevel()
+        window = self.get_root()
         window.set_news()
 
     def set_story_details(self, story):
@@ -235,14 +264,14 @@ class CommentThread(Gtk.ScrolledWindow):
 
     def _load_thread(self, story):
         for child in self.comments_container.get_children():
-            GLib.idle_add(child.destroy)
+            self.comments_container.remove(child)
         GLib.idle_add(self._set_comments, story.kids)
 
     def _set_comments(self, comments):
         for i in comments:
             widget1 = CommentItem(i, 0)
             widget1.set_visible(True)
-            self.comments_container.pack_start(widget1, 0, 0, 0)  ## fill and expand
+            self.comments_container.prepend(widget1)  ## fill and expand
 
 
 @Gtk.Template(resource_path='/hn/ui/NewsItem.ui')
@@ -254,14 +283,12 @@ class NewsItem(Gtk.Grid):
     comments_btn = Gtk.Template.Child()
     title_event = Gtk.Template.Child()
 
-    def __init__(self, _item_id, *args, **kwds):
+    def __init__(self, *args, **kwds):
         super().__init__(*args, **kwds)
         self.article_url = None
-        self.thread_id = _item_id
-        self.on_show()
 
-    def on_show(self):
-        BG_TASKS.submit(self._set_content, self.thread_id)
+    def populate(self, thread_id):
+        BG_TASKS.submit(self._set_content, thread_id)
 
     @Gtk.Template.Callback()
     def comments_click(self, event):
@@ -319,7 +346,8 @@ class CommentItem(Gtk.Box):
 
     def set_content(self, comment: Comment):
         if comment.deleted and not comment.kids:
-            GLib.idle_add(self.destroy)
+            root = self.get_root()
+            root.remove(self)
             return
 
         if comment.dead:
@@ -336,7 +364,7 @@ class CommentItem(Gtk.Box):
         for i in comment.kids:
             wid = CommentItem(i, self.nesting + 1)
             wid.set_visible(True)
-            self.replies.pack_start(wid, 0, 0, 0)
+            self.replies.prepend(wid)
 
     @Gtk.Template.Callback()
     def reveal_replies_click(self, event):

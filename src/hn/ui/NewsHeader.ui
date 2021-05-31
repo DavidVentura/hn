@@ -1,76 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
-  <template class="NewsHeader" parent="HdyHeaderBar">
-    <property name="visible">true</property>
-    <property name="hexpand">True</property>
-    <property name="spacing">0</property>
+  <requires lib="gtk" version="4.0"/>
+  <template class="NewsHeader" parent="AdwHeaderBar">
+    <child>
+      <object class="GtkButton">
+        
+        <signal name="clicked" handler="menu_click" swapped="no"/>
+        <property name="can_focus">0</property>
+        <child>
+          <object class="GtkImage" id="back_icon">
+            
+            <property name="can_focus">0</property>
+            <property name="halign">start</property>
+            <property name="resource">/hn/icons/menu.svg</property>
+            <style>
+              <class name="thread-back"/>
+            </style>
+          </object>
+        </child>
+        <style>
+          <class name="flat"/>
+          <class name="round"/>
+          <class name="bork"/>
+        </style>
+      </object>
+    </child>
+    <child type="title">
+      <object class="GtkLabel" id="page_title">
+        
+        <property name="hexpand">1</property>
+        <property name="can_focus">0</property>
+        <property name="halign">center</property>
+        <property name="ellipsize">end</property>
+        <property name="label">Top Stories</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkBox">
+        
+        <property name="halign">end</property>
         <child>
           <object class="GtkButton">
-            <signal name="clicked" handler="menu_click" swapped="no"/>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            
+            <signal name="clicked" handler="on_refresh"/>
+            <property name="can_focus">0</property>
             <child>
-              <object class="GtkImage" id="back_icon">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="resource">/hn/icons/menu.svg</property>
+              <object class="GtkImage">
+                
+                <property name="can_focus">0</property>
+                <property name="halign">end</property>
+                <property name="resource">/hn/icons/refresh.svg</property>
                 <style>
-                  <class name="thread-back"/>
+                  <class name="thread-article"/>
                 </style>
               </object>
             </child>
             <style>
               <class name="flat"/>
               <class name="round"/>
-              <class name="bork"/>
             </style>
           </object>
         </child>
-        <child type="title">
-          <object class="GtkLabel" id="page_title">
-            <property name="hexpand">true</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">center</property>
-            <property name="ellipsize">end</property>
-            <property name="label">Top Stories</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="orientation">horizontal</property>
-            <property name="halign">end</property>
-            <child>
-              <object class="GtkButton">
-                <signal name="clicked" handler="on_refresh"/>
-                <property name="can_focus">False</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">end</property>
-                    <property name="resource">/hn/icons/refresh.svg</property>
-                    <style>
-                      <class name="thread-article"/>
-                    </style>
-                  </object>
-                </child>
-                <style>
-                  <class name="flat"/>
-                  <class name="round"/>
-                </style>
-              </object>
-            </child>
-          </object>
-	  <packing>
-	    <property name="pack_type">end</property>
-	  </packing>
-        </child>
-        <style>
-          <class name="news-header"/>
-        </style>
+      </object>
+    </child>
+    <style>
+      <class name="news-header"/>
+    </style>
   </template>
 </interface>
